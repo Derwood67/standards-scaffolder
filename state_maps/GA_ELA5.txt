@@ -1,0 +1,15 @@
+evidence: 5.T.RA.2.a, K-12.P.EICC.3.f
+theme: 5.T.T.1.c
+character: 5.T.T.1.a, 5.T.T.1.b
+mainidea: 5.T.T.2.a
+structure: 5.T.SS.1.a, K-12.P.AC.1.d
+vocab: 5.L.V.3.a, K-12.P.EICC.3.g
+figlang: 5.T.SS.2.a, 5.T.SS.2.b
+genre: 5.T.T.4.a, 5.T.T.4.b, 5.T.C.2.a
+compare: 5.T.T.1.d, 5.T.T.2.c
+opinion: 5.T.T.3.a, 5.T.T.3.c
+informative: 5.T.T.2.d, 5.T.SS.1.b
+narrative: 5.T.T.1.e
+process: K-12.P.EICC.4, 5.L.GC.2.b, 5.L.GC.2.c
+research: 5.T.RA.1.b, 5.T.RA.2.a
+foundations: 5.F.P.4, 5.F.F.1

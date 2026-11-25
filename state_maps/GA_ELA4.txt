@@ -1,15 +1,15 @@
-evidence: 4.P.EICC.3.f, 4.T.RA.2.a
+evidence: K-12.P.EICC.3.f, 4.T.RA.2.a
 theme: 4.T.T.1.c
 character: 4.T.T.1.a, 4.T.T.1.b
 mainidea: 4.T.T.2.a
-structure: 4.T.SS.1.a, 4.P.AC.1.d
-vocab: 4.L.V.3.a, 4.P.EICC.3.g
+structure: 4.T.SS.1.a, K-12.P.AC.1.d
+vocab: 4.L.V.3.a, K-12.P.EICC.3.g
 figlang: 4.T.SS.2.a, 4.T.SS.2.b, 4.L.V.3.b
 genre: 4.T.T.4.a, 4.T.T.4.b, 4.T.C.2.a
 compare: 4.T.T.1.d, 4.T.T.2.c, 4.T.SS.1.a
 opinion: 4.T.T.3.a, 4.T.T.3.c
 informative: 4.T.T.2.d, 4.T.SS.1.b
 narrative: 4.T.T.1.e
-process: 4.P.EICC.4, 4.L.GC.1, 4.L.GC.2
+process: K-12.P.EICC.4, 4.L.GC.1, 4.L.GC.2
 research: 4.T.RA.1, 4.T.RA.2
 foundations: 4.F.P.4, 4.F.F.1

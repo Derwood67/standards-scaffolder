@@ -1,0 +1,14 @@
+evidence: AL.3.19a, AL.3.24a
+theme: AL.3.22c, AL.3.22d
+character: AL.3.22a, AL.3.22b
+mainidea: AL.3.19, AL.3.29
+structure: AL.3.24a
+vocab: AL.3.13, AL.3.14a, AL.3.14b, AL.3.16
+figlang: AL.3.14e, AL.3.27
+genre: AL.3.22c, AL.3.27
+compare: AL.3.14c, AL.3.22d, AL.3.26a, AL.3.26b
+opinion: AL.3.25a, AL.3.35
+informative: AL.3.34
+narrative: AL.3.33
+research: AL.3.25b, AL.3.39, AL.3.39a
+foundations: AL.3.1, AL.3.2, AL.3.3, AL.3.4, AL.3.5, AL.3.6, AL.3.7, AL.3.8, AL.3.9, AL.3.10, AL.3.11, AL.3.12

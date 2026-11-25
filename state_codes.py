@@ -209,7 +209,7 @@ NOTES = {
                      ["VDOE 2024 English Standards of Learning", "https://doe.virginia.gov/teaching-learning-assessment/k-12-standards-instruction/english-reading-literacy/standards-of-learning/2024-english-standards-of-learning"]]),
 }
 
-_ELA4 = " ELA codes are mapped for grade 4 only, and each is flagged because the skill match is a judgment call."
+_ELA4 = " ELA codes are mapped for grades 3-5, and each is flagged because the skill match is a judgment call."
 _TAIL = " Scaffolds, items and pacing follow the Common Core version of the skill. Where a code is not mapped yet, the Common Core match is shown instead."
 NOTES.update({
  "GA": dict(note="Georgia K-12 Mathematics Standards (2023) codes are shown for kindergarten, grade 1 and grade 3. Other grades are not mapped yet." + _ELA4 + " ELA follows Georgia's K-12 ELA Standards (2025-26)." + _TAIL,

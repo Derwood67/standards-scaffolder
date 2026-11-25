@@ -1,0 +1,14 @@
+evidence: AL.5.18, AL.5.23a, AL.5.26d, AL.5.29a, AL.5.30
+theme: AL.5.23, AL.5.23a, AL.5.26b
+character: AL.5.19, AL.5.20
+mainidea: AL.5.22
+structure: AL.5.24, AL.5.24b
+vocab: AL.5.3, AL.5.11, AL.5.12c
+figlang: AL.5.12a, AL.5.12b
+genre: AL.5.26b
+compare: AL.5.21, AL.5.24b, AL.5.26b, AL.5.26e
+opinion: AL.5.25, AL.5.36
+informative: AL.5.35
+narrative: AL.5.34
+research: AL.5.26c, AL.5.37, AL.5.38a, AL.5.38b, AL.5.38c
+foundations: AL.5.1, AL.5.2, AL.5.4, AL.5.5, AL.5.6

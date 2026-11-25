@@ -1,0 +1,15 @@
+evidence: 5.3.R.3, 5.3.R.5
+theme: 5.2.R.3, 5.2.R.4
+character: 5.3.R.3, 5.2.R.3
+mainidea: 5.2.R.1, 5.2.R.4
+structure: 5.3.R.7, 5.6.R.2, 5.7.R
+vocab: 5.5.R.2, 5.5.R.5, 5.5.W.1
+figlang: 5.3.R.4, 5.5.R.1
+genre: 5.2.R.2, 5.3.R.2
+compare: 5.7.R, 5.3.R.5
+opinion: 5.3.W.3, 5.3.R.6
+informative: 5.3.W.2, 5.6.W.3
+narrative: 5.3.W.1
+process: 5.2.W.1, 5.2.W.2, 5.2.W.3, 5.2.W.4, 5.5.R.1, 5.5.R.2, 5.5.W.1, 5.5.W.2, 5.5.W.3
+research: 5.6.R.1, 5.6.R.3, 5.6.W.1, 5.6.W.2, 5.6.W.3
+foundations: 5.2.SE.1, 5.2.SE.2, 5.2.F.1, 5.2.F.2

@@ -1,0 +1,13 @@
+evidence: 3.RC.1
+theme: 3.RC.2
+character: 3.RC.3
+mainidea: 3.RC.5
+structure: 3.RC.6, 3.RC.7, 3.RC.8
+vocab: 3.RC.11, 3.RC.12, 3.RC.13
+compare: 3.RC.10
+opinion: 3.RC.9, 3.W.2
+informative: 3.W.3
+narrative: 3.W.4
+process: 3.W.5, 3.W.7, 3.W.8
+research: 3.W.6
+foundations: 3.RF.1, 3.RF.2, 3.RF.3, 3.RF.4

@@ -1,0 +1,14 @@
+evidence: 5.RC.1
+theme: 5.RC.2
+character: 5.RC.3
+mainidea: 5.RC.6
+structure: 5.RC.7, 5.RC.8
+vocab: 5.RC.11, 5.RC.12, 5.RC.13
+figlang: 5.RC.14
+compare: 5.RC.5
+opinion: 5.RC.9, 5.W.1
+informative: 5.W.2
+narrative: 5.W.3
+process: 5.W.4, 5.W.6, 5.W.7
+research: 5.W.5
+foundations: 5.RF.1
