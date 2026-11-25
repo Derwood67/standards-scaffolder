@@ -161,6 +161,12 @@ VA_ELA = {
          opinion=["4.W.1"], informative=["4.W.1"], narrative=["4.W.1"], process=["4.W.2", "4.W.3", "4.LU.1", "4.LU.2"],
          research=["4.R.1"], foundations=["4.FFR.3", "4.DSR"]),
 }
+# Grades 2, 3, 5 and 6 follow the same strand numbering as grades 1 and 4 (pattern-filled, flagged like all VA ELA).
+_sub = lambda m, g: {k: [f"{g}." + c.split(".", 1)[1] for c in v] for k, v in m.items()}
+VA_ELA[2] = _sub(VA_ELA[1], 2)
+VA_ELA[3] = _sub(VA_ELA[4], 3)
+VA_ELA[5] = _sub(VA_ELA[4], 5)
+VA_ELA[6] = {k: v for k, v in _sub(VA_ELA[4], 6).items() if k != "foundations"}
 VA = dict(VA_MATH)
 for g, m in VA_ELA.items():
     for key, codes in m.items():
@@ -198,7 +204,7 @@ NOTES = {
  "FL": dict(note="Florida B.E.S.T. benchmark codes are shown where they have been mapped. Scaffolds, items and pacing follow the Common Core version of the skill. Where a Florida code is not mapped yet, the Common Core match is shown instead.",
             sources=[["FLDOE B.E.S.T. Standards for Mathematics", "https://www.fldoe.org/academics/standards/subject-areas/math-science/mathematics"],
                      ["FLDOE B.E.S.T. ELA Standards (PDF)", "https://www.fldoe.org/core/fileparse.php/7539/urlt/elabeststandardsfinal.pdf"]]),
- "VA": dict(note="Virginia SOL codes (2023 Mathematics, 2024 English) are shown where they have been mapped. Scaffolds, items and pacing follow the Common Core version of the skill. Where a Virginia code is not mapped yet, the Common Core match is shown instead.",
+ "VA": dict(note="Virginia SOL codes (2023 Mathematics, 2024 English) are shown where they have been mapped. English codes for grades 2, 3, 5 and 6 follow the strand numbering of the grades read directly, so they are flagged for a check. Scaffolds, items and pacing follow the Common Core version of the skill. Where a Virginia code is not mapped yet, the Common Core match is shown instead.",
             sources=[["VDOE Standards of Learning for Mathematics", "https://doe.virginia.gov/teaching-learning-assessment/instruction/mathematics/standards-of-learning-for-mathematics"],
                      ["VDOE 2024 English Standards of Learning", "https://doe.virginia.gov/teaching-learning-assessment/k-12-standards-instruction/english-reading-literacy/standards-of-learning/2024-english-standards-of-learning"]]),
 }
