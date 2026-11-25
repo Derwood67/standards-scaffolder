@@ -17,9 +17,9 @@ STATES = {
         "framework": "NC Standard Course of Study (Math 2017 K-8 and ELA 2017, the versions in effect for 2026-27)",
         "pacing_authority": "NCDPI sets standards; pacing is set by each district (LEA). The sequence here is a representative order drawn from published NC district pacing guides.",
         "sources": [
-            ["NCDPI Standard Course of Study", "https://www.dpi.nc.gov/districts-schools/classroom-resources/k-12-standards-curriculum-and-instruction/standard-course-study"],
-            ["NC 4-5 Standards Planner (your planner, with NCDPI wording)", "https://claude.ai/artifact/HNpqZp5qKuUZLHQ3ChhkCd"],
-            ["Halifax County Schools, Grade 4 Math pacing guide (NE CARES 2023-24)", "https://www.halifax.k12.nc.us//cms/lib/NC02214542/Centricity/Domain/1022/4th Grade Math 2023 2024 NE CARES Pacing Guide.pdf"],
+            ["NCDPI Standard Course of Study", "https://www.dpi.nc.gov/districts-schools/classroom-resources/office-teaching-and-learning/standard-course-study"],
+            ["NC 4-5 Standards Planner (private Claude artifact; opens only for the owner)", "https://claude.ai/artifact/HNpqZp5qKuUZLHQ3ChhkCd"],
+            ["Halifax County Schools, Grade 4 Math pacing guide (NE CARES 2023-24)", "https://www.halifax.k12.nc.us//cms/lib/NC02214542/Centricity/Domain/1022/4th%20Grade%20Math%202023%202024%20NE%20CARES%20Pacing%20Guide.pdf"],
         ],
         "test": "EOG (end of grade), late May",
         "planner": {"url": "https://claude.ai/artifact/HNpqZp5qKuUZLHQ3ChhkCd", "name": "NC 4-5 Standards Planner", "grades": [4, 5]},
@@ -40,9 +40,8 @@ STATES = {
         "pacing_authority": "TEA sets the TEKS but does not mandate pacing. Most districts use a Year at a Glance (often from the TEKS Resource System). The sequence here is a representative YAG order. Math TEKS revisions are under SBOE review, so check TEA for adopted changes.",
         "sources": [
             ["TEA: Texas Essential Knowledge and Skills", "https://tea.texas.gov/curriculum-and-instruction/texas-essential-knowledge-and-skills-teks"],
-            ["19 TAC Chapter 111 (Mathematics)", "https://tea.texas.gov/about-tea/laws-and-rules/texas-administrative-code/19-tac-chapter-111"],
+            ["19 TAC Chapter 111 (Mathematics)", "https://tea.texas.gov/laws-and-rules/texas-administrative-code/19-tac-chapter-111"],
             ["Brazos ISD, Grade 4 Math Year at a Glance 2023-24", "https://www.brazosisd.net/page/open/5205/0/4th%20Grade%20Math%20YAG%2023-24.pdf"],
-            ["Texas Gateway: pacing documents", "https://texasgateway.org/resource/pacing-documents-0"],
         ],
         "test": "STAAR, April",
     },
