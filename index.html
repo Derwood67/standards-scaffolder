@@ -229,9 +229,10 @@ footer p { margin: 0; max-width: 90ch; }
   const STATES = ["NC", "MI", "TX"];  // states with their own codes, pacing and items
   const base = st => (DATA.states[st] && DATA.states[st].same_as) || st;
   const isFull = st => DATA.states[st].group === "full";
-  const codesFor = (c, st) => c.codes[base(st)] || [];
+  const ownCodes = (c, st) => Array.isArray(c.codes[st]);  // state has its own mapped codes for this concept
+  const codesFor = (c, st) => (ownCodes(c, st) ? c.codes[st] : c.codes[base(st)]) || [];
   const gl = g => (+g === 0 ? "K" : String(g));
-  const GROUPS = [["full", "Full state data"], ["ccss", "Common Core states"], ["ccss-based", "Common Core-based states"], ["own", "States with their own standards (CCSS skill match)"]];
+  const GROUPS = [["full", "Full state data"], ["ccss", "Common Core states"], ["ccss-based", "Common Core-based states"], ["own", "States with their own standards"]];
   const SUBJ = { math: "Math", ela: "ELA" };
   const PHASES = ["Concrete", "Concrete", "Representational", "Representational", "Abstract"];
 
@@ -295,19 +296,19 @@ footer p { margin: 0; max-width: 90ch; }
     const c = byId[S.concept];
     if (!c) { $("sheet").innerHTML = '<p class="empty">Pick a standard from the unit list to see its scaffold.</p>'; return; }
     const codes = codesFor(c, S.state);
-    const toVerify = isFull(S.state) && (c.verify || []).includes(S.state);
+    const toVerify = (isFull(S.state) || ownCodes(c, S.state)) && (c.verify || []).includes(S.state);
     const pre = c.prereqs.map(p => byId[p] ? `<button type="button" class="lchip" data-c="${p}"><span class="g">Gr ${gl(byId[p].grade)}</span><span>${esc(byId[p].name)}</span></button>` : `<span class="lchip text"><span class="g">${esc(p.split(":")[0])}</span><span>${esc(p.split(":").slice(1).join(":").trim())}</span></span>`).join("");
     const nxt = (leadsTo[c.id] || []).map(p => `<button type="button" class="lchip" data-c="${p}"><span class="g">Gr ${gl(byId[p].grade)}</span><span>${esc(byId[p].name)}</span></button>`).join("") || `<span class="lchip text"><span class="g">Gr ${c.grade + 1}</span><span>Continues beyond grade 6 in this version</span></span>`;
     const rows = [...new Set([S.state, ...STATES])];
     const where = rows.map(st => {
       const hits = unitsFor(c.id, st);
       const cds = codesFor(c, st);
-      return `<tr class="${st === S.state ? "cur" : ""}${hits.length ? " go" : ""}"${hits.length ? ` data-st="${st}" data-u="${hits[0].i}" title="Open ${st} pacing at this unit"` : ""}><td><b>${st}</b>${isFull(st) ? "" : ` <small>(CCSS)</small>`}</td><td>${cds.length ? cds.map(x => `<span class="chip-code">${esc(x)}</span>`).join(" ") : '<span class="pill na">Not in standards</span>'}</td><td>${hits.length ? hits.map(h => `<button type="button" class="tbtn" data-st="${st}" data-u="${h.i}">Unit ${h.i + 1}: ${esc(h.u.title)}</button>`).join("<br>") : "—"}</td><td class="wk">${hits.map(h => `Wk ${h.r[0]}–${h.r[1]}`).join("<br>") || "—"}</td></tr>`;
+      return `<tr class="${st === S.state ? "cur" : ""}${hits.length ? " go" : ""}"${hits.length ? ` data-st="${st}" data-u="${hits[0].i}" title="Open ${st} pacing at this unit"` : ""}><td><b>${st}</b>${isFull(st) || ownCodes(c, st) ? "" : ` <small>(CCSS)</small>`}</td><td>${cds.length ? cds.map(x => `<span class="chip-code">${esc(x)}</span>`).join(" ") : '<span class="pill na">Not in standards</span>'}</td><td>${hits.length ? hits.map(h => `<button type="button" class="tbtn" data-st="${st}" data-u="${h.i}">Unit ${h.i + 1}: ${esc(h.u.title)}</button>`).join("<br>") : "—"}</td><td class="wk">${hits.map(h => `Wk ${h.r[0]}–${h.r[1]}`).join("<br>") || "—"}</td></tr>`;
     }).join("");
     $("sheet").innerHTML = `
       <div class="sheet-head">
-        <div class="eyebrow"><span class="pill">${c.grade === 0 ? "Kindergarten" : "Grade " + c.grade} ${SUBJ[c.subject]}</span>${codes.length ? `<span class="codes">${codes.map(x => `<span class="chip-code">${esc(x)}</span>`).join("")}</span>` : `<span class="pill na">Not in ${isFull(S.state) ? S.state : "Common Core"} standards</span>`}${toVerify ? `<span class="pill verify" title="These codes follow the state's numbering pattern but have not been checked line by line against the state's documents yet.">Codes not yet verified</span>` : ""}</div>
-        ${!isFull(S.state) && codes.length ? `<p class="codenote">${esc(DATA.states[S.state].code_note)}</p>` : ""}
+        <div class="eyebrow"><span class="pill">${c.grade === 0 ? "Kindergarten" : "Grade " + c.grade} ${SUBJ[c.subject]}</span>${codes.length ? `<span class="codes">${codes.map(x => `<span class="chip-code">${esc(x)}</span>`).join("")}</span>` : `<span class="pill na">Not in ${isFull(S.state) || ownCodes(c, S.state) ? S.state : "Common Core"} standards at this grade</span>`}${toVerify ? `<span class="pill verify" title="These codes follow the state's numbering pattern but have not been checked line by line against the state's documents yet.">Codes not yet verified</span>` : ""}</div>
+        ${!isFull(S.state) && !ownCodes(c, S.state) && codes.length ? `<p class="codenote">${DATA.states[S.state].mapped && !ownCodes(c, S.state) ? `${esc(DATA.states[S.state].name)} codes for this skill are not mapped yet, so the Common Core match is shown.` : esc(DATA.states[S.state].code_note)}</p>` : ""}
         <h2>${esc(c.name)}</h2>
         <p class="summary">${esc(c.summary)}</p>
         ${(() => { const pl = DATA.states[S.state].planner; return pl && pl.grades.includes(c.grade) ? `<p class="summary"><a href="${esc(pl.url)}" target="_blank" rel="noopener">Check off and take notes on ${esc(codes.join(", "))} in your ${esc(pl.name)} ↗</a> <span class="muted">(private link: opens only for the owner)</span></p>` : ""; })()}
@@ -398,6 +399,7 @@ footer p { margin: 0; max-width: 90ch; }
     const us = units();
     if (S.concept && byId[S.concept] && byId[S.concept].subject === S.subject && byId[S.concept].grade === S.grade) {
       const hits = unitsFor(S.concept, S.state); if (hits.length) { S.unit = hits[0].i; return; }
+      if (codesFor(byId[S.concept], S.state).length) return;  // in this state's standards but not in the shared pacing order
     }
     if (S.unit >= us.length) S.unit = 0;
     const u = us[S.unit]; S.concept = u && u.concepts[0] ? u.concepts[0] : (S.concept && byId[S.concept] && byId[S.concept].grade === S.grade ? S.concept : null);
@@ -412,8 +414,8 @@ footer p { margin: 0; max-width: 90ch; }
   q.addEventListener("input", () => {
     const term = q.value.trim().toLowerCase();
     if (term.length < 2) { res.hidden = true; return; }
-    const hits = DATA.concepts.filter(c => c.name.toLowerCase().includes(term) || c.summary.toLowerCase().includes(term) || STATES.some(s => c.codes[s].some(x => x.toLowerCase().includes(term)))).slice(0, 12);
-    res.innerHTML = hits.length ? hits.map(c => { const cds = STATES.flatMap(s => c.codes[s].filter(x => x.toLowerCase().includes(term)).map(x => `${s} ${x}`)); return `<button type="button" data-c="${c.id}"><span><b>${esc(c.name)}</b></span><small>${c.grade === 0 ? "Kindergarten" : "Grade " + c.grade} ${SUBJ[c.subject]}${cds.length ? " · " + esc(cds.slice(0, 3).join(", ")) : ""}</small></button>`; }).join("") : '<button type="button" disabled><small>No matching standards in grades K–6.</small></button>';
+    const hits = DATA.concepts.filter(c => c.name.toLowerCase().includes(term) || c.summary.toLowerCase().includes(term) || Object.keys(c.codes).some(s => c.codes[s].some(x => x.toLowerCase().includes(term)))).slice(0, 12);
+    res.innerHTML = hits.length ? hits.map(c => { const cds = Object.keys(c.codes).flatMap(s => c.codes[s].filter(x => x.toLowerCase().includes(term)).map(x => `${s} ${x}`)); return `<button type="button" data-c="${c.id}"><span><b>${esc(c.name)}</b></span><small>${c.grade === 0 ? "Kindergarten" : "Grade " + c.grade} ${SUBJ[c.subject]}${cds.length ? " · " + esc(cds.slice(0, 3).join(", ")) : ""}</small></button>`; }).join("") : '<button type="button" disabled><small>No matching standards in grades K–6.</small></button>';
     res.hidden = false;
   });
   res.addEventListener("click", e => { const b = e.target.closest("[data-c]"); if (b) { res.hidden = true; q.value = ""; goConcept(b.dataset.c); } });

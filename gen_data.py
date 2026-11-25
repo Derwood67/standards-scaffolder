@@ -913,6 +913,21 @@ for s, subj in PACING.items():
                 for cid in u["concepts"]:
                     assert cid in ids, (s, sub, g, cid)
 
+# State-specific codes for states with their own standards (state_codes.py).
+# Stored on the concept as codes[ST]; scaffolds, items and pacing still come from the CCSS version.
+from state_codes import CODES as STATE_CODES, NOTES as STATE_NOTES, VERIFY as STATE_VERIFY
+_allids = {c["id"] for c in C}
+for _st, _map in STATE_CODES.items():
+    assert set(_map) <= _allids, (_st, set(_map) - _allids)
+    for _c in C:
+        if _c["id"] in _map:
+            _c["codes"][_st] = _map[_c["id"]]
+            if _c["id"] in STATE_VERIFY[_st]:
+                _c.setdefault("verify", []).append(_st)
+    STATES[_st]["mapped"] = True
+    STATES[_st]["code_note"] = STATE_NOTES[_st]["note"]
+    STATES[_st]["sources"] = STATE_NOTES[_st]["sources"] + [s for s in STATES[_st]["sources"] if s[1] not in {u for _, u in STATE_NOTES[_st]["sources"]}]
+
 from examples import build as build_examples
 EXS = build_examples(C)
 for c in C:
