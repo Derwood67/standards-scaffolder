@@ -169,6 +169,23 @@ for g, m in VA_ELA.items():
 CODES = {"FL": FL, "VA": VA}
 VERIFY = {"FL": FL_VERIFY, "VA": set(VA)}
 
+
+def _load(st):
+    """state_maps/ST.txt lines: 'concept-id: CODE, CODE' with a trailing ' ?' when the code needs a check."""
+    import os
+    codes, verify = {}, set()
+    for line in open(os.path.join(os.path.dirname(__file__), "state_maps", st + ".txt")):
+        if ":" not in line: continue
+        cid, rest = (x.strip() for x in line.split(":", 1))
+        if rest.endswith("?"): verify.add(cid); rest = rest[:-1].strip()
+        if rest in ("", "-"): continue
+        codes[cid] = [c.strip() for c in rest.split(",")]
+    return codes, verify
+
+
+for _st in ("GA", "OK", "IN", "SC", "AL", "NE", "MN"):
+    CODES[_st], VERIFY[_st] = _load(_st)
+
 NOTES = {
  "FL": dict(note="Florida B.E.S.T. benchmark codes are shown where they have been mapped. Scaffolds, items and pacing follow the Common Core version of the skill. Where a Florida code is not mapped yet, the Common Core match is shown instead.",
             sources=[["FLDOE B.E.S.T. Standards for Mathematics", "https://www.fldoe.org/academics/standards/subject-areas/math-science/mathematics"],
@@ -177,3 +194,23 @@ NOTES = {
             sources=[["VDOE Standards of Learning for Mathematics", "https://doe.virginia.gov/teaching-learning-assessment/instruction/mathematics/standards-of-learning-for-mathematics"],
                      ["VDOE 2024 English Standards of Learning", "https://doe.virginia.gov/teaching-learning-assessment/k-12-standards-instruction/english-reading-literacy/standards-of-learning/2024-english-standards-of-learning"]]),
 }
+
+_TAIL = " Scaffolds, items and pacing follow the Common Core version of the skill. Where a code is not mapped yet, the Common Core match is shown instead."
+NOTES.update({
+ "GA": dict(note="Georgia K-12 Mathematics Standards (2023) codes are shown for kindergarten, grade 1 and grade 3. Other grades are not mapped yet." + _TAIL,
+            sources=[["GaDOE Mathematics Curriculum Maps (2023, PDF)", "https://sparchives.gadoe.org/Curriculum-Instruction-and-Assessment/Curriculum-and-Instruction/Documents/Mathematics/Georgia-K12-Mathematics-Standards/Georgia-Mathematics-Curriculum-Maps/GA-Mathematics-Curriculum-Maps-2023.pdf"]]),
+ "OK": dict(note="Oklahoma Academic Standards for Mathematics (2022) codes are shown. They were mapped from a standards index, not the OSDE document, so each one is flagged for a check." + _TAIL,
+            sources=[["Oklahoma math standards index (Common Planner)", "https://www.commonplanner.com/standards/oklahoma-ece7c5b8/mathematics/grade-4-7b1e7d06"]]),
+ "IN": dict(note="Indiana Academic Standards for Mathematics (2023) codes are shown, from IDOE correlation guides. Indiana's 2026 standards begin in 2027-28." + _TAIL,
+            sources=[["IDOE Mathematics standards", "https://secure.in.gov/doe/students/indiana-academic-standards/mathematics"],
+                     ["IDOE Grade 3 Math 2023 IAS-CCSS correlation guide (PDF)", "https://in.gov/doe/files/Grade-3-Math-2023-IAS-CCSS-Correlation-Guide.pdf"]]),
+ "SC": dict(note="2025 South Carolina College- and Career-Ready Mathematics Standards codes are shown. K-3 come from the SCDE document; grades 4-6 come from a standards index and are flagged for a check." + _TAIL,
+            sources=[["SCDE 2025 SC CCR Mathematics Standards", "https://ed.sc.gov/instruction/standards/mathematics/standards/2025-south-carolina-college-and-career-ready-mathematics-standards/"]]),
+ "AL": dict(note="Alabama Course of Study: Mathematics (2019) codes are shown for kindergarten. Other grades are not mapped yet." + _TAIL,
+            sources=[["2019 Alabama Course of Study: Mathematics (PDF)", "https://www.alabamaachieves.org/wp-content/uploads/2021/03/2019-Alabama-Mathematics-COS-Rev.-6-2021.pdf"]]),
+ "NE": dict(note="Nebraska College and Career Ready Standards for Mathematics (2022) codes are shown." + _TAIL,
+            sources=[["Nebraska Mathematics Standards, adopted 2022 (PDF, district copy)", "https://www.dusters.org/wp-content/uploads/2022/12/6212NDE_Mathematics_Standards9-2-22_ADOPTED10-2022.pdf"]]),
+ "MN": dict(note="Minnesota 2007 mathematics benchmark codes (adopted 2008) are shown for grades 1-6, from a standards index, so each is flagged. Minnesota's 2022 standards must be in place by 2027-28 and have no grade codes published yet." + _TAIL,
+            sources=[["Minnesota math benchmarks index (Common Planner)", "https://www.commonplanner.com/standards/minnesota-1ff740cd/mathematics/grade-4-4429e683"],
+                     ["Minn. R. 3501.0750 (2022 standards)", "https://www.revisor.mn.gov/rules/3501.0750/version/2025-09-03T14:20:17-05:00"]]),
+})

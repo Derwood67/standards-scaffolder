@@ -1,0 +1,8 @@
+mk-count: AL.K.1, AL.K.2, AL.K.3
+mk-howmany: AL.K.4, AL.K.5
+mk-compare: AL.K.6, AL.K.7
+mk-addsub: AL.K.8, AL.K.9
+mk-decompose: AL.K.10, AL.K.11
+mk-teens: AL.K.14
+mk-measure: AL.K.15, AL.K.16, AL.K.17
+mk-shapes: AL.K.18, AL.K.19, AL.K.20, AL.K.21, AL.K.22, AL.K.23

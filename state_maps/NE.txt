@@ -1,0 +1,70 @@
+mk-count: MA K.N.2.f, MA K.N.2.g
+mk-howmany: MA K.N.2.a, MA K.N.2.d
+mk-compare: MA K.N.2.h
+mk-addsub: MA K.N.4.a, MA K.N.4.d, MA K.N.4.e
+mk-decompose: MA K.N.4.b, MA K.N.4.c
+mk-teens: MA K.N.3.a
+mk-measure: MA K.G.2.a, MA K.G.2.b, MA K.D.1.a, MA K.D.1.b
+mk-shapes: MA K.G.1.a, MA K.G.1.b, MA K.G.1.c, MA K.G.1.d, MA K.G.1.e
+mk-finlit: MA K.G.3.a ?
+m1-addsub20: MA 1.N.5.f, MA 1.N.5.g
+m1-strategies: MA 1.N.4.a, MA 1.N.4.b, MA 1.N.5.b, MA 1.N.5.d
+m1-equal: MA 1.N.5.a, MA 1.N.5.c
+m1-count120: MA 1.N.2.a, MA 1.N.2.b, MA 1.N.2.c, MA 1.N.2.d
+m1-placevalue: MA 1.N.3.a, MA 1.N.3.b
+m1-add100: MA 1.N.4.c, MA 1.N.4.d, MA 1.N.4.e, MA 1.N.4.f, MA 1.N.4.g
+m1-measure: MA 1.G.2.a, MA 1.G.2.b, MA 1.G.3.c
+m1-data: MA 1.D.1.a, MA 1.D.2.a
+m1-shapes: MA 1.G.1.a, MA 1.G.1.b, MA 1.G.1.c, MA 1.G.1.d
+m1-money: MA 1.G.3.a, MA 1.G.3.b
+m2-addsub: MA 2.N.4.a, MA 2.N.5.a, MA 2.N.5.b
+m2-groups: MA 2.N.5.c, MA 2.N.5.d
+m2-place: MA 2.N.2.a, MA 2.N.3.a, MA 2.N.3.b, MA 2.N.3.c
+m2-addsub1000: MA 2.N.4.b, MA 2.N.4.c, MA 2.N.4.d, MA 2.N.4.e
+m2-length: MA 2.G.2.a, MA 2.G.2.b, MA 2.G.3.a, MA 2.G.3.b, MA 2.G.4.a, MA 2.G.4.b
+m2-timemoney: MA 2.G.5.a, MA 2.G.5.b
+m2-data: MA 2.D.1.a, MA 2.D.1.b, MA 2.D.1.c, MA 2.D.2.a
+m2-shapes: MA 2.G.1.a, MA 2.G.1.b, MA 2.G.1.c
+m2-fractions: MA 2.G.1.d, MA 2.G.1.e
+m2-finlit: MA 2.G.5.a ?
+m3-mult: MA 3.A.1.f
+m3-facts: MA 3.A.1.e, MA 3.A.1.g, MA 3.A.1.h
+m3-twostep: MA 3.A.1.c, MA 3.A.1.d
+m3-place: MA 3.N.1.a, MA 3.N.1.b, MA 3.A.1.a, MA 3.A.1.b
+m3-fracunit: MA 3.N.2.a, MA 3.N.2.b, MA 3.N.2.c
+m3-fraceq: MA 3.N.2.d, MA 3.N.2.e, MA 3.N.2.f
+m3-area: MA 3.G.2.b, MA 3.G.2.c
+m3-perim: MA 3.G.2.a
+m3-measure: MA 3.G.3.a, MA 3.G.3.b, MA 3.G.4.a, MA 3.G.4.b
+m3-data: MA 3.D.1.a, MA 3.D.1.b, MA 3.D.2.a
+m4-place: MA 4.N.1.a, MA 4.N.1.b, MA 4.N.1.c
+m4-addsub: MA 4.A.1.a
+m4-mult: MA 4.A.1.b
+m4-div: MA 4.A.1.c, MA 4.A.1.f
+m4-factors: MA 4.N.4.a, MA 4.N.4.b
+m4-fraceq: MA 4.N.2.a, MA 4.N.2.b, MA 4.N.2.c
+m4-fracops: MA 4.N.3.a, MA 4.N.3.b, MA 4.N.3.c, MA 4.N.3.d, MA 4.N.3.e
+m4-decimals: MA 4.N.1.a, MA 4.N.1.d
+m4-angles: MA 4.G.1.a, MA 4.G.1.b, MA 4.G.1.c, MA 4.G.1.d, MA 4.G.2.d, MA 4.G.2.e
+m4-measure: MA 4.G.2.a, MA 4.G.2.b, MA 4.G.2.c, MA 4.G.3.a
+m4-data: MA 4.D.1.a, MA 4.D.2.a
+m5-place: MA 5.N.1.a, MA 5.N.1.b, MA 5.N.1.c
+m5-multdiv: MA 5.A.1.a, MA 5.A.1.b
+m5-decops: MA 5.N.3.g
+m5-fracaddsub: MA 5.N.3.d, MA 5.N.3.e
+m5-fracmult: MA 5.N.3.b
+m5-fracdiv: MA 5.N.3.c, MA 5.N.3.f
+m5-expr: MA 5.A.1.d
+m5-coord: MA 5.G.2.a, MA 5.G.2.b, MA 5.G.2.c
+m5-volume: MA 5.G.1.b, MA 5.G.4.c, MA 5.G.4.d, MA 5.G.4.e
+m5-shapes: MA 5.G.1.c
+m5-measure-data: MA 5.G.3.a, MA 5.D.2.a
+m6-ratios: MA 6.R.1.a, MA 6.R.1.b, MA 6.R.1.e, MA 6.R.1.f
+m6-percent: MA 6.R.1.c, MA 6.R.1.d
+m6-fracdiv: MA 6.N.2.b
+m6-numsys: MA 6.N.1.a, MA 6.N.2.a
+m6-integers: MA 6.N.1.c, MA 6.N.1.d, MA 6.N.1.e, MA 6.R.2.a, MA 6.R.2.b, MA 6.R.2.c
+m6-expressions: MA 6.N.2.c, MA 6.A.1.a, MA 6.A.1.b, MA 6.A.2.a
+m6-equations: MA 6.A.1.c, MA 6.A.1.d, MA 6.A.1.e, MA 6.A.2.b, MA 6.A.2.c
+m6-geometry: MA 6.G.1.a, MA 6.G.3.a, MA 6.G.3.b, MA 6.G.3.c
+m6-stats: MA 6.D.2.a, MA 6.D.2.b, MA 6.D.2.c, MA 6.D.2.d, MA 6.D.2.e

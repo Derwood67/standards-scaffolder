@@ -1,0 +1,72 @@
+mk-count: K.N.1.1, K.N.1.5, K.N.1.6 ?
+mk-howmany: K.N.1.2, K.N.1.4 ?
+mk-compare: K.N.1.7, K.N.1.8 ?
+mk-addsub: K.N.2.1 ?
+mk-decompose: K.N.2.1 ?
+mk-teens: K.N.1.6 ?
+mk-measure: K.GM.2.1, K.GM.2.2, K.GM.2.3, K.D.1.1 ?
+mk-shapes: K.GM.1.1, K.GM.1.2, K.GM.1.3, K.GM.1.4, K.GM.1.5, K.GM.1.6 ?
+mk-finlit: K.N.4.1 ?
+m1-addsub20: 1.N.2.1 ?
+m1-strategies: 1.N.2.2, 1.N.2.3 ?
+m1-equal: 1.N.2.2 ?
+m1-count120: 1.N.1.3, 1.N.1.4, 1.N.1.5 ?
+m1-placevalue: 1.N.1.2, 1.N.1.7, 1.N.1.9 ?
+m1-add100: 1.N.1.6 ?
+m1-measure: 1.GM.2.1, 1.GM.2.2, 1.GM.2.3, 1.GM.2.4, 1.GM.3.1, 1.GM.3.2 ?
+m1-data: 1.D.1.1, 1.D.1.2, 1.D.1.3 ?
+m1-shapes: 1.GM.1.1, 1.GM.1.2, 1.GM.1.3, 1.GM.1.4, 1.N.3.1, 1.N.3.2 ?
+m1-money: 1.N.4.1, 1.N.4.2, 1.N.4.3 ?
+m2-addsub: 2.N.2.1, 2.N.2.2, 2.N.2.5 ?
+m2-groups: 2.N.1.5, 2.N.2.6 ?
+m2-place: 2.N.1.1, 2.N.1.3, 2.N.1.7 ?
+m2-addsub1000: 2.N.1.4, 2.N.2.3, 2.N.2.4, 2.N.2.5 ?
+m2-length: 2.GM.2.1, 2.GM.2.2 ?
+m2-timemoney: 2.GM.3.1, 2.GM.3.2, 2.N.4.1, 2.N.4.2 ?
+m2-data: 2.D.1.1, 2.D.1.2, 2.D.1.3, 2.D.1.4 ?
+m2-shapes: 2.GM.1.1, 2.GM.1.2, 2.GM.1.3, 2.GM.1.4, 2.GM.1.5 ?
+m2-fractions: 2.N.3.1, 2.N.3.2 ?
+m2-finlit: 2.N.4.1, 2.N.4.2 ?
+m3-mult: 3.N.2.1, 3.N.2.6, 3.N.2.7 ?
+m3-facts: 3.N.2.2, 3.A.2.2 ?
+m3-twostep: 3.N.2.5, 3.A.1.1, 3.A.1.2, 3.A.1.3 ?
+m3-place: 3.N.1.1, 3.N.1.2, 3.N.1.3, 3.N.1.4, 3.N.1.5, 3.N.2.3, 3.N.2.4 ?
+m3-fracunit: 3.N.3.1, 3.N.3.2, 3.N.3.3, 3.N.3.4 ?
+m3-fraceq: 3.N.3.3, 3.N.3.4 ?
+m3-area: 3.GM.2.2, 3.GM.2.4 ?
+m3-perim: 3.GM.2.1 ?
+m3-measure: 3.GM.3.1, 3.GM.3.2 ?
+m3-data: 3.D.1.1, 3.D.1.2 ?
+m3-shapes: 3.GM.1.3 ?
+m3-finlit: 3.N.4.1, 3.N.4.2 ?
+m4-place: 4.N.1.1, 4.N.1.2, 4.N.1.3, 4.N.1.4 ?
+m4-addsub: 4.N.2.4 ?
+m4-mult: 4.N.2.1, 4.N.2.2, 4.N.2.3 ?
+m4-div: 4.N.2.5 ?
+m4-factors: 4.A.1.1, 4.A.1.2, 4.A.1.3 ?
+m4-fraceq: 4.N.3.1, 4.N.3.2, 4.N.3.3, 4.N.3.9 ?
+m4-fracops: 4.N.3.4, 4.N.3.5 ?
+m4-decimals: 4.N.3.6, 4.N.3.7, 4.N.3.8 ?
+m4-angles: 4.GM.1.1, 4.GM.2.1 ?
+m4-measure: 4.GM.2.2, 4.GM.2.5, 4.GM.2.6, 4.GM.3.2 ?
+m4-data: 4.D.1.1, 4.D.1.2, 4.D.1.3 ?
+m4-finlit: 4.N.4.1, 4.N.4.2 ?
+m5-place: 5.N.1.1, 5.N.1.2, 5.N.3.4 ?
+m5-multdiv: 5.N.2.1, 5.N.2.2, 5.N.2.3, 5.N.2.4 ?
+m5-decops: 5.N.3.1, 5.N.3.2, 5.N.3.3 ?
+m5-fracaddsub: 5.N.3.1, 5.N.3.2, 5.N.3.3 ?
+m5-expr: 5.A.1.1, 5.A.2.1, 5.A.2.2, 5.A.2.3 ?
+m5-coord: 5.A.1.2 ?
+m5-volume: 5.GM.2.1 ?
+m5-shapes: 5.GM.1.1, 5.GM.1.2, 5.GM.1.3 ?
+m5-measure-data: 5.GM.3.3, 5.GM.3.4, 5.D.1.1, 5.D.1.2 ?
+m6-ratios: 6.N.3.1, 6.N.3.2, 6.N.3.3 ?
+m6-percent: 6.N.1.3, 6.N.1.4, 6.N.3.3 ?
+m6-fracdiv: 6.N.4.2, 6.N.4.3 ?
+m6-numsys: 6.N.2.5, 6.N.2.6, 6.N.4.3 ?
+m6-integers: 6.N.1.1, 6.N.1.2, 6.N.2.2, 6.N.2.3, 6.A.1.1 ?
+m6-expressions: 6.N.2.4, 6.A.1.3, 6.A.2.1 ?
+m6-equations: 6.A.1.3, 6.A.3.1, 6.A.3.2 ?
+m6-geometry: 6.GM.2.1, 6.GM.2.2, 6.GM.2.3 ?
+m6-stats: 6.D.1.1, 6.D.1.2 ?
+m6-finlit: 6.N.4.4 ?
