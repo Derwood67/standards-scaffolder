@@ -1,0 +1,415 @@
+<meta charset="utf-8">
+<title>Standards Scaffolder</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: control bar → year-long pacing strip (36 weeks, units to scale) → unit list beside the scaffold sheet for one standard */
+:root {
+  --bg: #f3f6f5;
+  --surface: #ffffff;
+  --ink: #142a2e;
+  --muted: #56706f;
+  --line: #d5e0de;
+  --accent: #1f5fbf;       /* interactive */
+  --accent-soft: #e4edfb;
+  --mark: #e8a317;         /* pacing / week markers */
+  --mark-soft: #fdf1d6;
+  --warn: #b4442b;
+  --warn-soft: #fbe9e4;
+  --ok: #2f7a55;
+  --ok-soft: #e2f3ea;
+  --u1:#cfe0f7; --u2:#d7ecdf; --u3:#f6e2c4; --u4:#e6dcf3; --u5:#f5d6d6; --u6:#d4ecec; --u7:#ece7cf; --u8:#dfe3ea;
+  --font-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f1a1c; --surface: #162426; --ink: #e3eeec; --muted: #94acaa; --line: #2a3c3e;
+  --accent: #7fb0ff; --accent-soft: #1c2e4a; --mark: #f0b94a; --mark-soft: #3a2f16;
+  --warn: #f08a72; --warn-soft: #3b211b; --ok: #79cfa2; --ok-soft: #173326;
+  --u1:#203a5c; --u2:#21412e; --u3:#4a3a1f; --u4:#352a4c; --u5:#4a2626; --u6:#1f4242; --u7:#3d3a22; --u8:#2c3240;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0f1a1c; --surface: #162426; --ink: #e3eeec; --muted: #94acaa; --line: #2a3c3e;
+  --accent: #7fb0ff; --accent-soft: #1c2e4a; --mark: #f0b94a; --mark-soft: #3a2f16;
+  --warn: #f08a72; --warn-soft: #3b211b; --ok: #79cfa2; --ok-soft: #173326;
+  --u1:#203a5c; --u2:#21412e; --u3:#4a3a1f; --u4:#352a4c; --u5:#4a2626; --u6:#1f4242; --u7:#3d3a22; --u8:#2c3240;
+  color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.5; }
+.wrap { max-width: 1200px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 48px; display: grid; gap: 20px; }
+h1, h2, h3 { font-family: var(--font-display); margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+h1 { font-size: 1.6rem; font-weight: 800; }
+h2 { font-size: 1.3rem; font-weight: 700; }
+h3 { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+a { color: var(--accent); }
+.code { font-family: var(--font-mono); font-size: 0.8rem; }
+
+/* header */
+header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 16px; }
+.brand p { margin: 2px 0 0; color: var(--muted); max-width: 60ch; }
+.controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
+.ctl { display: grid; gap: 4px; }
+.ctl > span { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.seg { display: inline-flex; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 3px; gap: 2px; }
+.seg button { border: 0; background: transparent; padding: 6px 12px; border-radius: 7px; cursor: pointer; font-weight: 700; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.seg button:hover:not([aria-pressed="true"]) { background: var(--accent-soft); }
+.search { position: relative; }
+.search input { width: 240px; max-width: 100%; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); font: inherit; }
+.results { position: absolute; right: 0; top: calc(100% + 4px); width: min(420px, 90vw); max-height: 360px; overflow: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; box-shadow: 0 10px 30px rgb(0 0 0 / 0.18); z-index: 20; }
+.results button { display: grid; gap: 2px; width: 100%; text-align: left; padding: 10px 12px; border: 0; border-bottom: 1px solid var(--line); background: transparent; cursor: pointer; }
+.results button:hover, .results button:focus-visible { background: var(--accent-soft); }
+.results small { color: var(--muted); }
+
+/* state note */
+.statebar { display: flex; flex-wrap: wrap; gap: 8px 24px; padding: 12px 16px; border-left: 4px solid var(--mark); background: var(--mark-soft); border-radius: 0 10px 10px 0; font-size: 0.9rem; }
+.statebar b { font-family: var(--font-display); }
+.statebar .auth { flex-basis: 100%; color: var(--ink); }
+
+/* pacing strip */
+.pacing { display: grid; gap: 8px; }
+.pacing-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.pacing-head small { color: var(--muted); }
+.strip-scroll { overflow-x: auto; padding-bottom: 4px; }
+.strip { min-width: 720px; display: grid; gap: 4px; }
+.units { display: flex; gap: 3px; height: 74px; }
+.unit { flex: var(--w) 1 0; min-width: 0; border: 0; border-radius: 8px; padding: 8px; text-align: left; cursor: pointer; background: var(--ucol); display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; position: relative; }
+.unit .n { font-family: var(--font-display); font-weight: 800; font-size: 1.05rem; line-height: 1; }
+.unit .t { font-size: 0.74rem; line-height: 1.2; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.unit.review { background: repeating-linear-gradient(135deg, var(--ucol) 0 8px, var(--surface) 8px 12px); }
+.unit[aria-pressed="true"] { outline: 3px solid var(--ink); outline-offset: -3px; }
+.unit.hit::after { content: ""; position: absolute; top: 6px; right: 6px; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 2px var(--surface); }
+.weeks { display: grid; grid-template-columns: repeat(var(--total), 1fr); font-size: 0.68rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.weeks span { border-left: 1px solid var(--line); padding-left: 2px; height: 14px; }
+.weeks span.q { border-left: 2px solid var(--mark); color: var(--ink); font-weight: 700; }
+
+/* main */
+.main { display: grid; grid-template-columns: minmax(0, 340px) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 860px) { .main { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 14px; min-width: 0; }
+.unit-meta { color: var(--muted); font-size: 0.88rem; font-variant-numeric: tabular-nums; }
+.clist { display: grid; gap: 6px; list-style: none; margin: 0; padding: 0; }
+.clist button { width: 100%; text-align: left; border: 1px solid var(--line); background: var(--bg); border-radius: 10px; padding: 10px 12px; cursor: pointer; display: grid; gap: 4px; }
+.clist button:hover { border-color: var(--accent); }
+.clist button[aria-current="true"] { border-color: var(--accent); background: var(--accent-soft); box-shadow: inset 4px 0 0 var(--accent); }
+.clist .nm { font-weight: 700; }
+.codes { display: flex; flex-wrap: wrap; gap: 4px; }
+.chip-code { font-family: var(--font-mono); font-size: 0.74rem; padding: 2px 6px; border-radius: 5px; background: var(--surface); border: 1px solid var(--line); }
+.clist button[aria-current="true"] .chip-code { background: var(--surface); }
+.note { font-size: 0.85rem; color: var(--muted); font-style: italic; margin: 0; }
+.empty { color: var(--muted); margin: 0; }
+
+/* scaffold sheet */
+.sheet-head { display: grid; gap: 6px; }
+.eyebrow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 0.8rem; color: var(--muted); }
+.pill { font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); font-size: 0.75rem; }
+.pill.na { background: var(--warn-soft); color: var(--warn); }
+.summary { margin: 0; max-width: 70ch; }
+.links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 560px) { .links { grid-template-columns: minmax(0, 1fr); } }
+.linkcol { display: grid; gap: 8px; align-content: start; }
+.linkcol .chips { display: flex; flex-direction: column; gap: 6px; }
+.lchip { display: flex; gap: 8px; align-items: baseline; text-align: left; border: 1px solid var(--line); background: var(--bg); border-radius: 8px; padding: 6px 10px; cursor: pointer; font-size: 0.88rem; }
+.lchip:hover { border-color: var(--accent); }
+.lchip .g { font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); flex: none; }
+.lchip.text { cursor: default; border-style: dashed; color: var(--muted); }
+.lchip.text:hover { border-color: var(--line); }
+.ladder { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; counter-reset: step; }
+.ladder li { counter-increment: step; display: grid; grid-template-columns: 34px 1fr; gap: 12px; padding: 10px 0; position: relative; }
+.ladder li::before { content: counter(step); width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-display); font-weight: 800; background: var(--ink); color: var(--bg); z-index: 1; }
+.ladder li:not(:last-child)::after { content: ""; position: absolute; left: 14px; top: 40px; bottom: -10px; width: 2px; background: var(--line); }
+.ladder .phase { display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.boxes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 700px) { .boxes { grid-template-columns: minmax(0, 1fr); } }
+.box { border-radius: 10px; padding: 12px; display: grid; gap: 4px; align-content: start; font-size: 0.9rem; }
+.box h3 { color: inherit; }
+.box.check { background: var(--ok-soft); color: var(--ink); }
+.box.check h3 { color: var(--ok); }
+.box.warn { background: var(--warn-soft); }
+.box.warn h3 { color: var(--warn); }
+.box.sup { background: var(--accent-soft); }
+.box.sup h3 { color: var(--accent); }
+.box p { margin: 0; }
+.tbl-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.88rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+td.wk { font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr.cur td { background: var(--mark-soft); }
+.tbtn { border: 0; background: none; color: var(--accent); cursor: pointer; text-decoration: underline; padding: 0; text-align: left; }
+
+.example { display: grid; gap: 8px; }
+.ex-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.seg.small button { padding: 3px 10px; font-size: 0.8rem; }
+.ex-card { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; background: var(--bg); display: grid; gap: 8px; }
+.ex-prompt { margin: 0; font-size: 1rem; max-width: 70ch; }
+.ex-choices { margin: 0; padding-left: 24px; display: grid; gap: 4px; }
+.ex-card details summary { cursor: pointer; color: var(--accent); font-weight: 700; }
+.ex-card details:not(.passage) p { margin: 6px 0 0; padding: 8px 10px; border-radius: 8px; background: var(--ok-soft); }
+.passage { border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.passage summary { cursor: pointer; padding: 8px 12px; font-family: var(--font-display); font-weight: 700; }
+.ptext { padding: 0 16px 12px; max-height: 360px; overflow: auto; font-size: 0.95rem; line-height: 1.6; max-width: 68ch; }
+.ptext p { margin: 0 0 10px; }
+.copybtn { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 6px 10px; cursor: pointer; font-weight: 700; }
+.copybtn:hover { border-color: var(--accent); }
+.copymsg { font-size: 0.85rem; color: var(--ok); }
+.ex-card textarea { width: 100%; min-height: 120px; margin-top: 6px; }
+footer { display: grid; gap: 14px; font-size: 0.86rem; color: var(--muted); }
+.srcgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 760px) { .srcgrid { grid-template-columns: minmax(0, 1fr); } }
+.srcgrid ul { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 4px; }
+footer p { margin: 0; max-width: 90ch; }
+@media (prefers-reduced-motion: no-preference) { .panel { transition: border-color .2s; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <h1>Standards Scaffolder</h1>
+      <p>Pick a state, subject and grade. Follow the pacing order, then open any standard to see what it builds on, where it leads, and a step-by-step scaffold.</p>
+    </div>
+    <div class="controls">
+      <div class="ctl"><span>State</span><div class="seg" id="seg-state" role="group" aria-label="State"></div></div>
+      <div class="ctl"><span>Subject</span><div class="seg" id="seg-subject" role="group" aria-label="Subject"></div></div>
+      <div class="ctl"><span>Grade</span><div class="seg" id="seg-grade" role="group" aria-label="Grade"></div></div>
+      <div class="ctl search"><span>Find a standard</span>
+        <input id="q" type="search" placeholder="e.g. 4.NF.A.1, 4.3C, theme" autocomplete="off" aria-label="Search standards by code or keyword">
+        <div class="results" id="results" hidden></div>
+      </div>
+    </div>
+  </header>
+
+  <section class="statebar" id="statebar" aria-label="State framework"></section>
+
+  <section class="pacing" aria-label="Pacing">
+    <div class="pacing-head"><h2 id="pacing-title">Pacing</h2><small id="pacing-sub"></small></div>
+    <div class="strip-scroll"><div class="strip" id="strip"></div></div>
+  </section>
+
+  <div class="main">
+    <section class="panel" id="unitpanel" aria-label="Unit"></section>
+    <section class="panel" id="sheet" aria-label="Scaffold"></section>
+  </div>
+
+  <footer>
+    <h3>Sources & how to read this</h3>
+    <div class="srcgrid" id="sources"></div>
+    <p>Covered in this version: grades 3 to 5, math and ELA, for North Carolina, Michigan and Texas. Standard codes follow each state's published numbering (NC Standard Course of Study, Michigan/CCSS cluster codes, TEKS student expectations). Pacing orders are representative examples, since none of these states mandates pacing. Confirm codes and order against your district's current documents before planning.</p>
+    <p>Scaffold steps move from concrete to representational to abstract and are suggestions for planning, intervention and small groups.</p>
+  </footer>
+</div>
+
+<script>
+(async function () {
+  let DATA;
+  try {
+    const r = await fetch("data.json");
+    DATA = await r.json();
+  } catch (e) {
+    document.getElementById("sheet").innerHTML = '<p class="empty">The standards data did not load. Reload the page to try again.</p>';
+    return;
+  }
+  const byId = Object.fromEntries(DATA.concepts.map(c => [c.id, c]));
+  const leadsTo = {};
+  DATA.concepts.forEach(c => c.prereqs.forEach(p => { if (byId[p]) (leadsTo[p] ||= []).push(c.id); }));
+  const STATES = Object.keys(DATA.states);
+  const SUBJ = { math: "Math", ela: "ELA" };
+  const PHASES = ["Concrete", "Concrete", "Representational", "Representational", "Abstract"];
+
+  const S = { state: "NC", subject: "math", grade: 4, unit: 0, concept: null };
+  try { const saved = JSON.parse(localStorage.getItem("ss-state") || "null"); if (saved) Object.assign(S, saved); } catch (e) {}
+  readHash();
+
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+
+  function units(st = S.state, sub = S.subject, g = S.grade) { return DATA.pacing[st][sub][g] || []; }
+  function weekRanges(us) { let w = 1; return us.map(u => { const r = [w, w + u.weeks - 1]; w += u.weeks; return r; }); }
+  function unitsFor(cid, st) {
+    const c = byId[cid]; const us = units(st, c.subject, c.grade); const wr = weekRanges(us);
+    return us.map((u, i) => ({ i, u, r: wr[i] })).filter(x => x.u.concepts.includes(cid));
+  }
+
+  function seg(el, items, cur, onPick) {
+    el.innerHTML = items.map(([v, label]) => `<button type="button" data-v="${v}" aria-pressed="${String(v) === String(cur)}">${label}</button>`).join("");
+    el.onclick = e => { const b = e.target.closest("button"); if (b) onPick(b.dataset.v); };
+  }
+
+  function render() {
+    seg($("seg-state"), STATES.map(s => [s, s]), S.state, v => { S.state = v; exState = null; pickDefaultUnit(); render(); });
+    seg($("seg-subject"), Object.entries(SUBJ), S.subject, v => { S.subject = v; S.concept = null; S.unit = 0; pickDefaultUnit(); render(); });
+    seg($("seg-grade"), DATA.grades.map(g => [g, g]), S.grade, v => { S.grade = +v; S.concept = null; S.unit = 0; pickDefaultUnit(); render(); });
+    [...$("seg-state").children].forEach(b => b.title = DATA.states[b.dataset.v].name);
+
+    const st = DATA.states[S.state];
+    $("statebar").innerHTML = `<span><b>${esc(st.name)}</b> · ${esc(st.framework)}</span><span>State test: ${esc(st.test)}</span><span class="auth">${esc(st.pacing_authority)}</span>`;
+
+    const us = units(); const wr = weekRanges(us); const total = wr.length ? wr[wr.length - 1][1] : 36;
+    $("pacing-title").textContent = `${st.name} · Grade ${S.grade} ${SUBJ[S.subject]} pacing`;
+    $("pacing-sub").textContent = `${us.length} units across ${total} instructional weeks. Units are drawn to scale.`;
+    let weeksRow = "";
+    for (let w = 1; w <= total; w++) { const q = (w - 1) % 9 === 0; weeksRow += `<span class="${q ? "q" : ""}">${q ? "Q" + (Math.floor((w - 1) / 9) + 1) : (w % 3 === 0 ? w : "")}</span>`; }
+    $("strip").innerHTML = `<div class="units">${us.map((u, i) => `<button type="button" class="unit ${u.concepts.length ? "" : "review"} ${S.concept && u.concepts.includes(S.concept) ? "hit" : ""}" style="--w:${u.weeks};--ucol:var(--u${(i % 8) + 1})" aria-pressed="${i === S.unit}" data-i="${i}" title="Unit ${i + 1}: ${esc(u.title)} (weeks ${wr[i][0]}–${wr[i][1]})"><span class="n">${i + 1}</span><span class="t">${esc(u.title)}</span></button>`).join("")}</div><div class="weeks" style="--total:${total}">${weeksRow}</div>`;
+    $("strip").querySelector(".units").onclick = e => { const b = e.target.closest(".unit"); if (!b) return; S.unit = +b.dataset.i; const u = us[S.unit]; if (u.concepts.length && !u.concepts.includes(S.concept)) S.concept = u.concepts[0]; render(); };
+
+    const u = us[S.unit] || us[0];
+    if (!u) { $("unitpanel").innerHTML = '<p class="empty">No pacing data for this selection yet.</p>'; }
+    else {
+      $("unitpanel").innerHTML = `<div class="sheet-head"><h3>Unit ${S.unit + 1} of ${us.length}</h3><h2>${esc(u.title)}</h2><div class="unit-meta">Weeks ${wr[S.unit][0]}–${wr[S.unit][1]} · ${u.weeks} weeks</div></div>
+        ${u.note ? `<p class="note">${esc(u.note)}</p>` : ""}
+        ${u.concepts.length ? `<ul class="clist">${u.concepts.map(cid => { const c = byId[cid]; const codes = c.codes[S.state]; return `<li><button type="button" data-c="${cid}" aria-current="${cid === S.concept}"><span class="nm">${esc(c.name)}</span><span class="codes">${codes.map(x => `<span class="chip-code">${esc(x)}</span>`).join("")}</span></button></li>`; }).join("")}</ul>` : `<p class="empty">Review and assessment window. Use the scaffolds from earlier units for targeted reteaching.</p>`}`;
+      const cl = $("unitpanel").querySelector(".clist"); if (cl) cl.onclick = e => { const b = e.target.closest("button"); if (b) { S.concept = b.dataset.c; render(); } };
+    }
+
+    renderSheet();
+    renderSources();
+    save();
+  }
+
+  function renderSheet() {
+    const c = byId[S.concept];
+    if (!c) { $("sheet").innerHTML = '<p class="empty">Pick a standard from the unit list to see its scaffold.</p>'; return; }
+    const codes = c.codes[S.state];
+    const pre = c.prereqs.map(p => byId[p] ? `<button type="button" class="lchip" data-c="${p}"><span class="g">Gr ${byId[p].grade}</span><span>${esc(byId[p].name)}</span></button>` : `<span class="lchip text"><span class="g">${esc(p.split(":")[0])}</span><span>${esc(p.split(":").slice(1).join(":").trim())}</span></span>`).join("");
+    const nxt = (leadsTo[c.id] || []).map(p => `<button type="button" class="lchip" data-c="${p}"><span class="g">Gr ${byId[p].grade}</span><span>${esc(byId[p].name)}</span></button>`).join("") || `<span class="lchip text"><span class="g">Gr ${c.grade + 1}</span><span>Continues beyond grade 5 in this version</span></span>`;
+    const where = STATES.map(st => {
+      const hits = unitsFor(c.id, st);
+      const cds = c.codes[st];
+      return `<tr class="${st === S.state ? "cur" : ""}"><td><b>${st}</b></td><td>${cds.length ? cds.map(x => `<span class="chip-code">${esc(x)}</span>`).join(" ") : '<span class="pill na">Not in standards</span>'}</td><td>${hits.length ? hits.map(h => `<button type="button" class="tbtn" data-st="${st}" data-u="${h.i}">Unit ${h.i + 1}: ${esc(h.u.title)}</button>`).join("<br>") : "—"}</td><td class="wk">${hits.map(h => `Wk ${h.r[0]}–${h.r[1]}`).join("<br>") || "—"}</td></tr>`;
+    }).join("");
+    $("sheet").innerHTML = `
+      <div class="sheet-head">
+        <div class="eyebrow"><span class="pill">Grade ${c.grade} ${SUBJ[c.subject]}</span>${codes.length ? `<span class="codes">${codes.map(x => `<span class="chip-code">${esc(x)}</span>`).join("")}</span>` : `<span class="pill na">Not in ${S.state} standards</span>`}</div>
+        <h2>${esc(c.name)}</h2>
+        <p class="summary">${esc(c.summary)}</p>
+        ${(() => { const pl = DATA.states[S.state].planner; return pl && pl.grades.includes(c.grade) ? `<p class="summary"><a href="${esc(pl.url)}" target="_blank" rel="noopener">Check off and take notes on ${esc(codes.join(", "))} in your ${esc(pl.name)} ↗</a></p>` : ""; })()}
+      </div>
+      <div class="links">
+        <div class="linkcol"><h3>Builds on</h3><div class="chips">${pre}</div></div>
+        <div class="linkcol"><h3>Leads to</h3><div class="chips">${nxt}</div></div>
+      </div>
+      <div><h3>Scaffold ladder</h3>
+        <ol class="ladder">${c.steps.map((s, i) => `<li><div><span class="phase">${phase(i, c)}</span>${esc(s)}</div></li>`).join("")}</ol>
+      </div>
+      ${exampleBlock(c)}
+      <div class="boxes">
+        <div class="box check"><h3>Check for understanding</h3><p>${esc(c.check)}</p></div>
+        <div class="box warn"><h3>Watch for</h3><p>${esc(c.misconception)}</p></div>
+        <div class="box sup"><h3>Supports</h3><p>${esc(c.supports)}</p></div>
+      </div>
+      <div><h3>Where each state teaches it</h3>
+        <div class="tbl-wrap"><table><thead><tr><th>State</th><th>Codes</th><th>Unit</th><th>Weeks</th></tr></thead><tbody>${where}</tbody></table></div>
+      </div>`;
+    $("sheet").onclick = e => {
+      const cb = e.target.closest("[data-copy]");
+      if (cb) { const txt = studentCopy(byId[S.concept], cb.dataset.copy); const msg = cb.nextElementSibling;
+        navigator.clipboard.writeText(txt).then(() => { msg.textContent = "Copied"; }).catch(() => { const ta = document.createElement("textarea"); ta.value = txt; cb.parentNode.appendChild(ta); ta.select(); msg.textContent = "Select the text and copy it"; });
+        return; }
+      const xb = e.target.closest("[data-ex]"); if (xb) { exState = xb.dataset.ex; renderSheet(); return; }
+      const b = e.target.closest("[data-c]"); if (b && b.tagName === "BUTTON") { goConcept(b.dataset.c); return; }
+      const t = e.target.closest(".tbtn"); if (t) { S.state = t.dataset.st; S.unit = +t.dataset.u; render(); }
+    };
+  }
+
+  let exState = null;
+  function exampleBlock(c) {
+    const ex = c.examples || {};
+    const avail = STATES.filter(s => ex[s]);
+    if (!avail.length) return "";
+    let st = exState && ex[exState] ? exState : (ex[S.state] ? S.state : avail[0]);
+    const it = ex[st];
+    const tabs = avail.map(s => `<button type="button" data-ex="${s}" aria-pressed="${s === st}">${s}</button>`).join("");
+    const codes = c.codes[st].join(", ");
+    return `<div class="example"><div class="ex-head"><h3>Example item</h3><div class="seg small" role="group" aria-label="Example state">${tabs}</div></div>
+      <div class="ex-card">
+        <div class="eyebrow"><span class="pill">${esc(it.style)}</span><span>${esc(it.format)}</span>${codes ? `<span class="chip-code">${esc(codes)}</span>` : ""}</div>
+        ${passageBlock(c.grade, it.text)}
+        <p class="ex-prompt">${esc(it.prompt)}</p>
+        ${it.choices ? `<ol class="ex-choices" type="A">${it.choices.map(x => `<li>${esc(x)}</li>`).join("")}</ol>` : ""}
+        <details><summary>Show answer</summary><p>${esc(it.answer)}</p></details>
+        ${it.text ? `<div><button type="button" class="copybtn" data-copy="${st}">Copy passage and question for students</button> <span class="copymsg" aria-live="polite"></span></div>` : ""}
+      </div>
+      <p class="note">Original practice item written in the style of ${esc(DATA.states[st].name)}'s guidance and tests. It is not a released test item.</p></div>`;
+  }
+
+  function textsFor(g, ref) {
+    const P = DATA.passages && DATA.passages[g]; if (!P || !ref) return [];
+    return ref === "pair" ? [P.story, P.article] : [P[ref]];
+  }
+  function passageBlock(g, ref) {
+    const ts = textsFor(g, ref); if (!ts.length) return "";
+    return ts.map(t => `<details class="passage"><summary>Read: ${esc(t.title)}</summary><div class="ptext">${t.text.split(/\n\n+/).map(par => `<p>${esc(par).replace(/\n/g, "<br>")}</p>`).join("")}</div></details>`).join("");
+  }
+  function studentCopy(c, st) {
+    const it = c.examples[st]; const ts = textsFor(c.grade, it.text);
+    let out = ts.map(t => `${t.title}\n\n${t.text}`).join("\n\n\n");
+    out += `\n\n\n${it.prompt}`;
+    if (it.choices) out += "\n" + it.choices.map((x, i) => `${"ABCDE"[i]}. ${x}`).join("\n");
+    return out;
+  }
+
+  function phase(i, c) {
+    if (c.subject === "ela") return ["Model", "Guided practice", "Guided practice", "Collaborative", "Independent"][i] || "Independent";
+    const n = c.steps.length; if (i === 0) return "Concrete"; if (i >= n - 1) return "Abstract";
+    return i < n / 2 ? "Concrete to representational" : "Representational";
+  }
+
+  function goConcept(cid) {
+    const c = byId[cid]; if (!c) return;
+    S.subject = c.subject; S.grade = c.grade; S.concept = cid;
+    const hits = unitsFor(cid, S.state); S.unit = hits.length ? hits[0].i : 0;
+    render();
+    $("sheet").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+  }
+
+  function pickDefaultUnit() {
+    const us = units();
+    if (S.concept && byId[S.concept] && byId[S.concept].subject === S.subject && byId[S.concept].grade === S.grade) {
+      const hits = unitsFor(S.concept, S.state); if (hits.length) { S.unit = hits[0].i; return; }
+    }
+    if (S.unit >= us.length) S.unit = 0;
+    const u = us[S.unit]; S.concept = u && u.concepts[0] ? u.concepts[0] : (S.concept && byId[S.concept] && byId[S.concept].grade === S.grade ? S.concept : null);
+  }
+
+  function renderSources() {
+    $("sources").innerHTML = STATES.map(s => { const st = DATA.states[s]; return `<div><b>${esc(st.name)}</b><ul>${st.sources.map(([t, u]) => `<li><a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a></li>`).join("")}</ul></div>`; }).join("");
+  }
+
+  // search
+  const q = $("q"), res = $("results");
+  q.addEventListener("input", () => {
+    const term = q.value.trim().toLowerCase();
+    if (term.length < 2) { res.hidden = true; return; }
+    const hits = DATA.concepts.filter(c => c.name.toLowerCase().includes(term) || c.summary.toLowerCase().includes(term) || STATES.some(s => c.codes[s].some(x => x.toLowerCase().includes(term)))).slice(0, 12);
+    res.innerHTML = hits.length ? hits.map(c => { const cds = STATES.flatMap(s => c.codes[s].filter(x => x.toLowerCase().includes(term)).map(x => `${s} ${x}`)); return `<button type="button" data-c="${c.id}"><span><b>${esc(c.name)}</b></span><small>Grade ${c.grade} ${SUBJ[c.subject]}${cds.length ? " · " + esc(cds.slice(0, 3).join(", ")) : ""}</small></button>`; }).join("") : '<button type="button" disabled><small>No matching standards in grades 3–5.</small></button>';
+    res.hidden = false;
+  });
+  res.addEventListener("click", e => { const b = e.target.closest("[data-c]"); if (b) { res.hidden = true; q.value = ""; goConcept(b.dataset.c); } });
+  document.addEventListener("click", e => { if (!e.target.closest(".search")) res.hidden = true; });
+  q.addEventListener("keydown", e => { if (e.key === "Escape") res.hidden = true; if (e.key === "Enter") { const f = res.querySelector("[data-c]"); if (f) f.click(); } });
+
+  function save() {
+    try { localStorage.setItem("ss-state", JSON.stringify(S)); } catch (e) {}
+    const h = `${S.state}-${S.subject}-${S.grade}${S.concept ? "-" + S.concept : ""}`.toLowerCase();
+    if (location.hash.slice(1) !== h) history.replaceState(null, "", "#" + h);
+  }
+  function readHash() {
+    const h = location.hash.slice(1); if (!h) return;
+    const p = h.split("-"); const st = (p[0] || "").toUpperCase();
+    if (!["NC", "MI", "TX"].includes(st) || !["math", "ela"].includes(p[1]) || ![3, 4, 5].includes(+p[2])) return;
+    S.state = st; S.subject = p[1]; S.grade = +p[2];
+    const cid = p.slice(3).join("-"); S.concept = cid || null;
+  }
+  window.addEventListener("hashchange", () => { readHash(); pickDefaultUnit(); render(); });
+
+  if (S.concept && !byId[S.concept]) S.concept = null;
+  pickDefaultUnit();
+  render();
+})();
+</script>
