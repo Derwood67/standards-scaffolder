@@ -1,0 +1,14 @@
+evidence: ELA.K.OE.3, ELA.K.OE.5
+theme: ELA.K.AOR.2.1, ELA.K.AOR.2.2, ELA.K.AOR.6.1
+character: ELA.K.AOR.1.1
+mainidea: ELA.K.AOR.2.2
+structure: ELA.K.AOR.5.1, ELA.K.AOR.5.2
+vocab: ELA.K.AOR.7.1, ELA.K.AOR.8.1, ELA.K.AOR.9.1
+figlang: ELA.K.AOR.1.2, ELA.K.AOR.8.1
+genre: ELA.K.AOR.3.1, ELA.K.AOR.5.1
+opinion: ELA.K.C.1.1, ELA.K.AOR.5.3
+informative: ELA.K.C.2.1
+narrative: ELA.K.C.3.1
+process: ELA.K.C.4.1, ELA.K.C.5.1
+research: ELA.K.R.1.1
+foundations: ELA.K.F.3.1, ELA.K.F.3.2, ELA.K.F.3.3, ELA.K.F.3.4, ELA.K.F.3.5, ELA.K.F.3.6, ELA.K.F.3.7, ELA.K.F.3.8, ELA.K.F.4.1, ELA.K.F.4.2, ELA.K.F.4.3

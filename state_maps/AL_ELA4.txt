@@ -1,0 +1,15 @@
+evidence: AL.4.15c, AL.4.16c, AL.4.20a, AL.4.28
+theme: AL.4.19a, AL.4.19b, AL.4.21a, AL.4.21c
+character: AL.4.15a, AL.4.15b, AL.4.15c
+mainidea: AL.4.21a, AL.4.21b, AL.4.21c
+structure: AL.4.23a, AL.4.23b
+vocab: AL.4.9, AL.4.10a, AL.4.13
+figlang: AL.4.10b, AL.4.10c
+genre: AL.4.17a, AL.4.17b, AL.4.18, AL.4.25, AL.4.26
+compare: AL.4.18a, AL.4.19a, AL.4.19b, AL.4.30a, AL.4.30b
+opinion: AL.4.24a, AL.4.37
+informative: AL.4.36
+narrative: AL.4.35
+process: AL.4.11, AL.4.38a, AL.4.38b, AL.4.38c, AL.4.38d, AL.4.38e, AL.4.38f, AL.4.39a, AL.4.39b, AL.4.39c
+research: AL.4.33a, AL.4.33b, AL.4.33c
+foundations: AL.4.1, AL.4.2, AL.4.3, AL.4.4, AL.4.5, AL.4.6, AL.4.7

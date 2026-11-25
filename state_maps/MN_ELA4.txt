@@ -1,0 +1,15 @@
+evidence: 4.1.4.1
+theme: 4.1.4.1, 4.1.4.2
+character: 4.1.4.3
+mainidea: 4.1.4.1, 4.1.4.4
+structure: 4.1.5.1, 4.1.5.2, 4.1.5.3
+vocab: 4.1.8.2
+figlang: 4.1.8.1
+genre: 4.1.5.1, 4.1.4.2
+compare: 4.1.9.1
+opinion: 4.2.4.1, 4.2.4.2
+informative: 4.2.5.1
+narrative: 4.2.6.1, 4.2.6.2
+process: 4.2.1.1, 4.2.1.2, 4.2.1.3, 4.2.3.1, 4.2.3.2
+research: 4.2.7.1, 4.2.7.2, 4.2.8.1
+foundations: 4.1.1.1, 4.1.1.2

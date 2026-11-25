@@ -1,0 +1,15 @@
+evidence: 4.3.R.3, 4.3.R.5
+theme: 4.2.R.3, 4.2.R.4
+character: 4.3.R.3, 4.2.R.3
+mainidea: 4.2.R.1, 4.2.R.4
+structure: 4.3.R.7, 4.6.R.2, 4.7.R
+vocab: 4.4.R.2, 4.4.R.5, 4.4.W.1
+figlang: 4.3.R.4, 4.4.R.1
+genre: 4.2.R.2, 4.3.R.2
+compare: 4.7.R, 4.3.R.5
+opinion: 4.3.W.3, 4.3.R.6
+informative: 4.3.W.2, 4.6.W.3
+narrative: 4.3.W.1
+process: 4.2.W.1, 4.2.W.2, 4.2.W.3, 4.2.W.4, 4.5.R.1, 4.5.R.2, 4.5.W.1, 4.5.W.2, 4.5.W.3
+research: 4.6.R.1, 4.6.R.3, 4.6.W.1, 4.6.W.2, 4.6.W.3
+foundations: 4.2.PWS.1, 4.2.PWS.2, 4.2.F.1, 4.2.F.2

@@ -185,6 +185,14 @@ def _load(st):
 
 for _st in ("GA", "OK", "IN", "SC", "AL", "NE", "MN"):
     CODES[_st], VERIFY[_st] = _load(_st)
+    # ELA: state_maps/ST_ELA<g>.txt keyed by skill (evidence, theme, ...). Every ELA match is a judgment call, so all are flagged.
+    import glob, os, re
+    for _f in sorted(glob.glob(os.path.join(os.path.dirname(__file__), "state_maps", _st + "_ELA*.txt"))):
+        _g = int(re.search(r"_ELA(\d)", _f).group(1))
+        _m, _ = _load(os.path.basename(_f)[:-4])
+        for _k, _v in _m.items():
+            CODES[_st][E(_g, _k)] = _v
+            VERIFY[_st].add(E(_g, _k))
 
 NOTES = {
  "FL": dict(note="Florida B.E.S.T. benchmark codes are shown where they have been mapped. Scaffolds, items and pacing follow the Common Core version of the skill. Where a Florida code is not mapped yet, the Common Core match is shown instead.",
@@ -195,22 +203,35 @@ NOTES = {
                      ["VDOE 2024 English Standards of Learning", "https://doe.virginia.gov/teaching-learning-assessment/k-12-standards-instruction/english-reading-literacy/standards-of-learning/2024-english-standards-of-learning"]]),
 }
 
+_ELA4 = " ELA codes are mapped for grade 4 only, and each is flagged because the skill match is a judgment call."
 _TAIL = " Scaffolds, items and pacing follow the Common Core version of the skill. Where a code is not mapped yet, the Common Core match is shown instead."
 NOTES.update({
- "GA": dict(note="Georgia K-12 Mathematics Standards (2023) codes are shown for kindergarten, grade 1 and grade 3. Other grades are not mapped yet." + _TAIL,
+ "GA": dict(note="Georgia K-12 Mathematics Standards (2023) codes are shown for kindergarten, grade 1 and grade 3. Other grades are not mapped yet." + _ELA4 + " ELA follows Georgia's K-12 ELA Standards (2025-26)." + _TAIL,
             sources=[["GaDOE Mathematics Curriculum Maps (2023, PDF)", "https://sparchives.gadoe.org/Curriculum-Instruction-and-Assessment/Curriculum-and-Instruction/Documents/Mathematics/Georgia-K12-Mathematics-Standards/Georgia-Mathematics-Curriculum-Maps/GA-Mathematics-Curriculum-Maps-2023.pdf"]]),
- "OK": dict(note="Oklahoma Academic Standards for Mathematics (2022) codes are shown. They were mapped from a standards index, not the OSDE document, so each one is flagged for a check." + _TAIL,
+ "OK": dict(note="Oklahoma Academic Standards for Mathematics (2022) codes are shown. They were mapped from a standards index, not the OSDE document, so each one is flagged for a check." + _ELA4 + " ELA follows the 2021 Oklahoma Academic Standards for ELA." + _TAIL,
             sources=[["Oklahoma math standards index (Common Planner)", "https://www.commonplanner.com/standards/oklahoma-ece7c5b8/mathematics/grade-4-7b1e7d06"]]),
- "IN": dict(note="Indiana Academic Standards for Mathematics (2023) codes are shown, from IDOE correlation guides. Indiana's 2026 standards begin in 2027-28." + _TAIL,
+ "IN": dict(note="Indiana Academic Standards for Mathematics (2023) codes are shown, from IDOE correlation guides. Indiana's 2026 standards begin in 2027-28." + _ELA4 + _TAIL,
             sources=[["IDOE Mathematics standards", "https://secure.in.gov/doe/students/indiana-academic-standards/mathematics"],
                      ["IDOE Grade 3 Math 2023 IAS-CCSS correlation guide (PDF)", "https://in.gov/doe/files/Grade-3-Math-2023-IAS-CCSS-Correlation-Guide.pdf"]]),
- "SC": dict(note="2025 South Carolina College- and Career-Ready Mathematics Standards codes are shown. K-3 come from the SCDE document; grades 4-6 come from a standards index and are flagged for a check." + _TAIL,
+ "SC": dict(note="2025 South Carolina College- and Career-Ready Mathematics Standards codes are shown. K-3 come from the SCDE document; grades 4-6 come from a standards index and are flagged for a check." + " ELA codes from the 2024 SC CCR ELA Standards are mapped for kindergarten through grade 2 and flagged; grades 3-6 are not mapped yet." + _TAIL,
             sources=[["SCDE 2025 SC CCR Mathematics Standards", "https://ed.sc.gov/instruction/standards/mathematics/standards/2025-south-carolina-college-and-career-ready-mathematics-standards/"]]),
- "AL": dict(note="Alabama Course of Study: Mathematics (2019) codes are shown for kindergarten. Other grades are not mapped yet." + _TAIL,
+ "AL": dict(note="Alabama Course of Study: Mathematics (2019) codes are shown for kindergarten. Other grades are not mapped yet." + _ELA4 + " ELA follows the 2021 Alabama Course of Study." + _TAIL,
             sources=[["2019 Alabama Course of Study: Mathematics (PDF)", "https://www.alabamaachieves.org/wp-content/uploads/2021/03/2019-Alabama-Mathematics-COS-Rev.-6-2021.pdf"]]),
- "NE": dict(note="Nebraska College and Career Ready Standards for Mathematics (2022) codes are shown." + _TAIL,
+ "NE": dict(note="Nebraska College and Career Ready Standards for Mathematics (2022) codes are shown." + " ELA codes are mapped for grade 4 reading literature only (theme, characters, genre), from an NSCAS item specification draft, and are flagged." + _TAIL,
             sources=[["Nebraska Mathematics Standards, adopted 2022 (PDF, district copy)", "https://www.dusters.org/wp-content/uploads/2022/12/6212NDE_Mathematics_Standards9-2-22_ADOPTED10-2022.pdf"]]),
- "MN": dict(note="Minnesota 2007 mathematics benchmark codes (adopted 2008) are shown for grades 1-6, from a standards index, so each is flagged. Minnesota's 2022 standards must be in place by 2027-28 and have no grade codes published yet." + _TAIL,
+ "MN": dict(note="Minnesota 2007 mathematics benchmark codes (adopted 2008) are shown for grades 1-6, from a standards index, so each is flagged. Minnesota's 2022 standards must be in place by 2027-28 and have no grade codes published yet." + _ELA4 + " ELA follows Minnesota's 2020 ELA standards." + _TAIL,
             sources=[["Minnesota math benchmarks index (Common Planner)", "https://www.commonplanner.com/standards/minnesota-1ff740cd/mathematics/grade-4-4429e683"],
                      ["Minn. R. 3501.0750 (2022 standards)", "https://www.revisor.mn.gov/rules/3501.0750/version/2025-09-03T14:20:17-05:00"]]),
 })
+
+_ELA_SRC = {
+ "GA": ["Georgia K-12 ELA Standards, grade 4 (Common Planner index)", "https://www.commonplanner.com/standards/georgia-172f1305/english-language-arts/grade-4-db1c87e2"],
+ "OK": ["Oklahoma ELA standards, grade 4 (Common Planner index)", "https://www.commonplanner.com/standards/oklahoma-ece7c5b8/english-language-arts/grade-4-6e302674"],
+ "IN": ["IDOE 2023 IAS ELA correlation guide, grade 4 (PDF)", "https://www.in.gov/doe/files/2023-IAS-Correlation-Guide_-ELA-Grade-4.pdf"],
+ "SC": ["SCDE 2024 SC CCR ELA Standards", "https://www.ed.sc.gov/instruction/standards/english-language-arts/standards/"],
+ "AL": ["Alabama 2021 ELA Course of Study (ALSDE)", "https://alabamaachieves.org/acad-stand/cas_202353_2021-alabama-course-of-study-english-language-arts_v1-0"],
+ "NE": ["NDE English Language Arts Standards", "https://www.education.ne.gov/ela/english-language-arts-standards/"],
+ "MN": ["Minnesota ELA standards, grade 4 (Common Planner index)", "https://www.commonplanner.com/standards/minnesota-1ff740cd/english-language-arts/grade-4-323a83e6"],
+}
+for _st, _src in _ELA_SRC.items():
+    NOTES[_st]["sources"].append(_src)

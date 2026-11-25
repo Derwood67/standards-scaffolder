@@ -1,0 +1,11 @@
+evidence: ELA.2.OE.3, ELA.2.OE.5
+theme: ELA.2.AOR.2.1, ELA.2.AOR.6.1
+character: ELA.2.AOR.1.1
+mainidea: ELA.2.AOR.2.2
+structure: ELA.2.AOR.5.1, ELA.2.AOR.5.2
+vocab: ELA.2.AOR.7.1, ELA.2.AOR.8.1, ELA.2.AOR.9.1
+figlang: ELA.2.AOR.1.2, ELA.2.AOR.8.1
+genre: ELA.2.AOR.3.1, ELA.2.AOR.5.1
+opinion: ELA.2.C.1.1, ELA.2.AOR.5.3
+research: ELA.2.R.1.1, ELA.2.R.1.2
+foundations: ELA.2.F.3.4, ELA.2.F.3.6, ELA.2.F.3.7, ELA.2.F.3.8, ELA.2.F.4.1, ELA.2.F.4.2, ELA.2.F.4.3
