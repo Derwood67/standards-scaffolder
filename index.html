@@ -142,6 +142,8 @@ th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--lin
 th { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
 td.wk { font-variant-numeric: tabular-nums; white-space: nowrap; }
 tr.cur td { background: var(--mark-soft); }
+tr.go { cursor: pointer; }
+tr.go:hover td { background: color-mix(in srgb, var(--accent) 10%, transparent); }
 .tbtn { border: 0; background: none; color: var(--accent); cursor: pointer; text-decoration: underline; padding: 0; text-align: left; }
 
 .example { display: grid; gap: 8px; }
@@ -281,7 +283,7 @@ footer p { margin: 0; max-width: 90ch; }
     const where = STATES.map(st => {
       const hits = unitsFor(c.id, st);
       const cds = c.codes[st];
-      return `<tr class="${st === S.state ? "cur" : ""}"><td><b>${st}</b></td><td>${cds.length ? cds.map(x => `<span class="chip-code">${esc(x)}</span>`).join(" ") : '<span class="pill na">Not in standards</span>'}</td><td>${hits.length ? hits.map(h => `<button type="button" class="tbtn" data-st="${st}" data-u="${h.i}">Unit ${h.i + 1}: ${esc(h.u.title)}</button>`).join("<br>") : "—"}</td><td class="wk">${hits.map(h => `Wk ${h.r[0]}–${h.r[1]}`).join("<br>") || "—"}</td></tr>`;
+      return `<tr class="${st === S.state ? "cur" : ""}${hits.length ? " go" : ""}"${hits.length ? ` data-st="${st}" data-u="${hits[0].i}" title="Open ${st} pacing at this unit"` : ""}><td><b>${st}</b></td><td>${cds.length ? cds.map(x => `<span class="chip-code">${esc(x)}</span>`).join(" ") : '<span class="pill na">Not in standards</span>'}</td><td>${hits.length ? hits.map(h => `<button type="button" class="tbtn" data-st="${st}" data-u="${h.i}">Unit ${h.i + 1}: ${esc(h.u.title)}</button>`).join("<br>") : "—"}</td><td class="wk">${hits.map(h => `Wk ${h.r[0]}–${h.r[1]}`).join("<br>") || "—"}</td></tr>`;
     }).join("");
     $("sheet").innerHTML = `
       <div class="sheet-head">
@@ -313,7 +315,7 @@ footer p { margin: 0; max-width: 90ch; }
         return; }
       const xb = e.target.closest("[data-ex]"); if (xb) { exState = xb.dataset.ex; renderSheet(); return; }
       const b = e.target.closest("[data-c]"); if (b && b.tagName === "BUTTON") { goConcept(b.dataset.c); return; }
-      const t = e.target.closest(".tbtn"); if (t) { S.state = t.dataset.st; S.unit = +t.dataset.u; render(); }
+      const t = e.target.closest(".tbtn") || e.target.closest("tr.go"); if (t) { S.state = t.dataset.st; S.unit = +t.dataset.u; render(); }
     };
   }
 
