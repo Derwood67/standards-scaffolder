@@ -275,14 +275,45 @@ ELA = {
 }
 
 
+STYLE["ALL"] = "K–2 classroom check"
+
+
+def ela_items(g):
+    """Reading and writing items for one grade, keyed by concept key."""
+    if g in (3, 4, 5):
+        return items_for(g)
+    import ela_k2_6 as EK
+    d = dict(EK.R[g])
+    if g == 6:
+        import passages
+        passages.W[6] = EK.W6
+        passages.TEXTS[6] = EK.TEXTS[6]
+        w = passages.writing_items(6)
+        w.pop("foundations")
+        fix = lambda t: t if not isinstance(t, str) else (t.replace("Write an opinion piece. State your opinion", "Write an argument. State a claim")
+                                                           .replace("Write an opinion essay", "Write an argumentative essay")
+                                                           .replace("clear opinion", "clear claim"))
+        w["opinion"] = {st: tuple(fix(x) for x in it) for st, it in w["opinion"].items()}
+        d.update(w)
+    else:
+        d.update(EK.k2_writing(g))
+    return d
+
+
 def build(concepts):
+    from math_k2_6 import EX as MATH_MORE
     out = {}
     for c in concepts:
         if c["subject"] == "math":
-            src = MATH.get(c["id"], {})
+            src = MATH.get(c["id"]) or MATH_MORE.get(c["id"], {})
         else:
             key = c["id"].split("-", 1)[1]
-            src = {st: (it[0], it[2], it[3], it[4], it[1]) for st, it in items_for(c["grade"])[key].items()}
+            src = {st: (it[0], it[2], it[3], it[4], it[1]) for st, it in ela_items(c["grade"])[key].items()}
+        if "ALL" in src:
+            src = {st: src["ALL"] for st in ("NC", "MI", "TX") if c["codes"][st]}
+            shared = True
+        else:
+            shared = False
         ex = {}
         for st, item in src.items():
             fmt, prompt, choices, answer = item[:4]
@@ -290,6 +321,8 @@ def build(concepts):
             if choices and choices[0] == answer and c["subject"] == "ela":
                 k = (c["grade"] + len(st) + len(prompt)) % len(choices)
                 choices = choices[k:] + choices[:k]
-            ex[st] = dict(style=STYLE[st], format=fmt, prompt=prompt, choices=choices, answer=answer, text=text)
+            ex[st] = dict(style=STYLE["ALL" if shared else st], format=fmt, prompt=prompt, choices=choices, answer=answer, text=text)
+            if shared:
+                ex[st]["shared"] = True
         out[c["id"]] = ex
     return out

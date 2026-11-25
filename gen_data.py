@@ -9,7 +9,7 @@ Data model
   "Leads to" is computed in the app by reversing prereqs.
 - pacing[STATE][subject][grade]: ordered units, each with weeks and concept ids.
 """
-import json, os
+import json, os, re
 
 STATES = {
     "NC": {
@@ -46,6 +46,10 @@ STATES = {
         "test": "STAAR, April",
     },
 }
+for _k in STATES:
+    STATES[_k]["group"] = "full"
+from states import build as build_states
+STATES.update(build_states())
 
 C = []  # concepts
 
@@ -413,7 +417,7 @@ m("m5-expr", 5, "Numerical expressions, patterns & prime numbers",
 m("m5-coord", 5, "Coordinate plane",
   "Graph points in the first quadrant and interpret coordinates in real-world problems.",
   ["NC.5.G.1"], ["5.G.A.1", "5.G.A.2"], ["5.8A", "5.8B", "5.8C"],
-  ["m4-angles", "m5-expr", "G2: Whole numbers on a number line"],
+  ["m4-angles", "m5-expr", "m2-length"],
   ["Build two perpendicular number lines on the floor.",
    "Walk to points: over on x, then up on y.",
    "Plot points from a table of values.",
@@ -465,7 +469,19 @@ m("m5-finlit", 5, "Personal financial literacy",
   "Thinking gross pay is what you take home.",
   "Budget simulations with realistic local prices.")
 
-# ---------------- ELA (grades 3-5) ----------------
+# ---------------- MATH K, 1, 2 and 6 (math_k2_6.py) ----------------
+import math_k2_6 as MK
+for _row in MK.CONCEPTS:
+    m(*_row)
+for _c in C:
+    if _c["id"] in MK.G3_PREREQS:
+        _c["prereqs"] = MK.G3_PREREQS[_c["id"]]
+    if _c["grade"] in (0, 1, 2, 6):
+        _c["verify"] = ["NC"]
+    elif _c["grade"] == 3:
+        _c["verify"] = ["NC"]
+
+# ---------------- ELA (templates shared by grades K-6) ----------------
 ELA = [
   # key, name, summary, cc codes (NC/MI) fn, NC override fn, TX fn, prereq keys, grade-2 text, focus by grade, steps, check, miscon, supports
   dict(key="evidence", name="Cite text evidence & make inferences",
@@ -666,20 +682,59 @@ ELA = [
        sup="Small-group decoding intervention; decodable texts for older readers."),
 ]
 
-for g in (3, 4, 5):
+import ela_k2_6 as EK
+
+
+def gid(g):
+    return "k" if g == 0 else str(g)
+
+
+def glab(g):
+    return "K" if g == 0 else str(g)
+
+
+def tx6(codes):
+    """Grade 6 TEKS ELAR drops the beginning-reading strand, so strands 3-13 shift down by one."""
+    out = []
+    for x in codes:
+        mm = re.match(r"^6\.(\d+)(.*)$", x)
+        n = int(mm.group(1))
+        if n == 2:
+            continue
+        out.append(f"6.{n - 1}{mm.group(2)}")
+    return out
+
+
+for g in (0, 1, 2, 3, 4, 5, 6):
     for e in ELA:
-        cid = f"e{g}-{e['key']}"
-        pre = [f"e{g}-{k}" for k in e["pre"]]
-        if g > 3:
-            pre = [f"e{g-1}-{e['key']}"] + pre
-        else:
-            pre = [e["g2"]] + pre
-        nc = (e.get("nc") or e["cc"])(g)
-        C.append(dict(id=cid, subject="ela", grade=g, name=e["name"],
-                      summary=e["summary"] + " Grade focus: " + e["focus"][g],
-                      codes=dict(NC=nc, MI=e["cc"](g), TX=e["tx"](g)),
-                      prereqs=pre, steps=e["steps"], check=e["check"],
-                      misconception=e["mis"], supports=e["sup"]))
+        key = e["key"]
+        if g == 6 and key == "foundations":
+            continue  # no foundational skills strand after grade 5
+        cid = f"e{gid(g)}-{key}"
+        pre = [f"e{gid(g)}-{k}" for k in e["pre"]]
+        pre = ([EK.PREK] if g == 0 else [f"e{gid(g - 1)}-{key}"]) + pre
+        focus = e["focus"].get(g) or EK.FOCUS[key][g]
+        cc = e["cc"](glab(g))
+        nc = (e.get("nc") or e["cc"])(glab(g))
+        tx = e["tx"](glab(g))
+        if key == "process" and g <= 2:
+            cc = [x for x in cc if x != f"W.{glab(g)}.4"]
+            if g <= 1:
+                cc = [x for x in cc if x != f"L.{glab(g)}.3"]
+                nc = [x for x in nc if x != f"L.{glab(g)}.3"]
+        if g == 6:
+            tx = tx6(tx)
+        name = e["name"].replace("Opinion writing", "Argument writing") if g == 6 else e["name"]
+        c = dict(id=cid, subject="ela", grade=g, name=name,
+                 summary=e["summary"] + " Grade focus: " + focus,
+                 codes=dict(NC=nc, MI=cc, TX=tx),
+                 prereqs=pre, steps=e["steps"], check=e["check"],
+                 misconception=e["mis"], supports=e["sup"])
+        if g in (0, 1, 2, 6):
+            c["verify"] = ["NC", "TX"]
+        elif g == 3:
+            c["verify"] = ["NC"]
+        C.append(c)
 
 
 def U(title, weeks, ids, note=None):
@@ -826,16 +881,31 @@ def ela_tx(g):
         U("Inquiry & research", 5, p("research", "compare")),
     ]
 
-for g in (3, 4, 5):
-    PACING["NC"]["ela"][g] = ela_nc(g)
-    PACING["MI"]["ela"][g] = ela_mi(g)
-    PACING["TX"]["ela"][g] = ela_tx(g)
+_ids = {c["id"] for c in C}
+
+
+def _keep(units, g):
+    for u in units:
+        u["concepts"] = [x for x in u["concepts"] if x in _ids]
+        if g <= 2:
+            u.pop("note", None)  # notes mention grade 3+ state tests
+    if g <= 2:
+        units = [u for u in units if u["title"] != "STAAR review"]
+    return units
+
+
+for g in (0, 1, 2, 3, 4, 5, 6):
+    PACING["NC"]["ela"][g] = _keep(ela_nc(gid(g)), g)
+    PACING["MI"]["ela"][g] = _keep(ela_mi(gid(g)), g)
+    PACING["TX"]["ela"][g] = _keep(ela_tx(gid(g)), g)
+for st in ("NC", "MI", "TX"):
+    PACING[st]["math"].update(MK.PACING[st])
 
 # Validate references
 ids = {c["id"] for c in C}
 for c in C:
     for p in c["prereqs"]:
-        assert p in ids or p.startswith("G2:"), (c["id"], p)
+        assert p in ids or re.match(r"^(PreK|G\d):", p), (c["id"], p)
 for s, subj in PACING.items():
     for sub, grades in subj.items():
         for g, units in grades.items():
@@ -850,9 +920,10 @@ for c in C:
     for st in ("NC", "MI", "TX"):
         assert (st in c["examples"]) == bool(c["codes"][st]), (c["id"], st)
 
-from passages import TEXTS
+from passages import TEXTS as _T35
+TEXTS = {**_T35, **EK.TEXTS}
 PASS = {g: {"topic": t["topic"], **{k: {"title": t[k][0], "text": t[k][1].strip()} for k in ("story", "article", "poem")}} for g, t in TEXTS.items()}
-out = dict(version="2026-11-25", grades=[3, 4, 5], states=STATES, concepts=C, pacing=PACING, passages=PASS)
+out = dict(version="2026-11-25", grades=[0, 1, 2, 3, 4, 5, 6], states=STATES, concepts=C, pacing=PACING, passages=PASS)
 here = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(here, "data.json"), "w") as f:
     json.dump(out, f, ensure_ascii=False, separators=(",", ":"))

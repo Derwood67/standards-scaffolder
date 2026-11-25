@@ -58,6 +58,10 @@ header { display: flex; flex-wrap: wrap; align-items: end; justify-content: spac
 .ctl > span { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
 .seg { display: inline-flex; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 3px; gap: 2px; }
 .seg button { border: 0; background: transparent; padding: 6px 12px; border-radius: 7px; cursor: pointer; font-weight: 700; }
+.ctl select { font: inherit; font-weight: 700; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 7px 34px 7px 12px; min-height: 42px; max-width: 260px; cursor: pointer; appearance: none; background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%); background-position: calc(100% - 17px) 50%, calc(100% - 12px) 50%; background-size: 5px 5px; background-repeat: no-repeat; }
+.ctl select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.codenote { font-size: 0.86rem; color: var(--muted); margin: 0; max-width: 80ch; }
+.pill.verify { background: var(--warn-soft, #fdf0d5); color: var(--ink); }
 .seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
 .seg button:hover:not([aria-pressed="true"]) { background: var(--accent-soft); }
 .search { position: relative; }
@@ -178,9 +182,9 @@ footer p { margin: 0; max-width: 90ch; }
       <p>Pick a state, subject and grade. Follow the pacing order, then open any standard to see what it builds on, where it leads, and a step-by-step scaffold.</p>
     </div>
     <div class="controls">
-      <div class="ctl"><span>State</span><div class="seg" id="seg-state" role="group" aria-label="State"></div></div>
+      <label class="ctl"><span>State</span><select id="sel-state" aria-label="State"></select></label>
       <div class="ctl"><span>Subject</span><div class="seg" id="seg-subject" role="group" aria-label="Subject"></div></div>
-      <div class="ctl"><span>Grade</span><div class="seg" id="seg-grade" role="group" aria-label="Grade"></div></div>
+      <label class="ctl"><span>Grade</span><select id="sel-grade" aria-label="Grade"></select></label>
       <div class="ctl search"><span>Find a standard</span>
         <input id="q" type="search" placeholder="e.g. 4.NF.A.1, 4.3C, theme" autocomplete="off" aria-label="Search standards by code or keyword">
         <div class="results" id="results" hidden></div>
@@ -203,7 +207,7 @@ footer p { margin: 0; max-width: 90ch; }
   <footer>
     <h3>Sources & how to read this</h3>
     <div class="srcgrid" id="sources"></div>
-    <p>Covered in this version: grades 3 to 5, math and ELA, for North Carolina, Michigan and Texas. Standard codes follow each state's published numbering (NC Standard Course of Study, Michigan/CCSS cluster codes, TEKS student expectations). Pacing orders are representative examples, since none of these states mandates pacing. Confirm codes and order against your district's current documents before planning.</p>
+    <p>Covered in this version: kindergarten to grade 6, math and ELA, for all 50 states and DC. North Carolina, Michigan and Texas have their own codes, pacing and items. Other states use the matching Common Core skill: Common Core states share its codes directly, Common Core-based states may number them differently, and states with their own standards are matched by skill until their codes are added. Codes marked "not yet verified" follow the state's numbering pattern and still need a line-by-line check. Pacing orders are representative examples, since none of these states mandates pacing. Confirm codes and order against your district's current documents before planning.</p>
     <p>Scaffold steps move from concrete to representational to abstract and are suggestions for planning, intervention and small groups.</p>
   </footer>
 </div>
@@ -221,7 +225,13 @@ footer p { margin: 0; max-width: 90ch; }
   const byId = Object.fromEntries(DATA.concepts.map(c => [c.id, c]));
   const leadsTo = {};
   DATA.concepts.forEach(c => c.prereqs.forEach(p => { if (byId[p]) (leadsTo[p] ||= []).push(c.id); }));
-  const STATES = Object.keys(DATA.states);
+  const ALL_STATES = Object.keys(DATA.states).sort((a, b) => DATA.states[a].name.localeCompare(DATA.states[b].name));
+  const STATES = ["NC", "MI", "TX"];  // states with their own codes, pacing and items
+  const base = st => (DATA.states[st] && DATA.states[st].same_as) || st;
+  const isFull = st => DATA.states[st].group === "full";
+  const codesFor = (c, st) => c.codes[base(st)] || [];
+  const gl = g => (+g === 0 ? "K" : String(g));
+  const GROUPS = [["full", "Full state data"], ["ccss", "Common Core states"], ["ccss-based", "Common Core-based states"], ["own", "States with their own standards (CCSS skill match)"]];
   const SUBJ = { math: "Math", ela: "ELA" };
   const PHASES = ["Concrete", "Concrete", "Representational", "Representational", "Abstract"];
 
@@ -232,11 +242,18 @@ footer p { margin: 0; max-width: 90ch; }
   const $ = id => document.getElementById(id);
   const esc = s => String(s).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
 
-  function units(st = S.state, sub = S.subject, g = S.grade) { return DATA.pacing[st][sub][g] || []; }
+  function units(st = S.state, sub = S.subject, g = S.grade) { return DATA.pacing[base(st)][sub][g] || []; }
   function weekRanges(us) { let w = 1; return us.map(u => { const r = [w, w + u.weeks - 1]; w += u.weeks; return r; }); }
   function unitsFor(cid, st) {
     const c = byId[cid]; const us = units(st, c.subject, c.grade); const wr = weekRanges(us);
     return us.map((u, i) => ({ i, u, r: wr[i] })).filter(x => x.u.concepts.includes(cid));
+  }
+
+  function fillSelects() {
+    $("sel-state").innerHTML = GROUPS.map(([g, label]) => `<optgroup label="${esc(label)}">${ALL_STATES.filter(s => DATA.states[s].group === g).map(s => `<option value="${s}">${esc(DATA.states[s].name)} (${s})</option>`).join("")}</optgroup>`).join("");
+    $("sel-grade").innerHTML = DATA.grades.map(g => `<option value="${g}">${g === 0 ? "Kindergarten" : "Grade " + g}</option>`).join("");
+    $("sel-state").onchange = e => { S.state = e.target.value; exState = null; pickDefaultUnit(); render(); };
+    $("sel-grade").onchange = e => { S.grade = +e.target.value; S.concept = null; S.unit = 0; pickDefaultUnit(); render(); };
   }
 
   function seg(el, items, cur, onPick) {
@@ -245,16 +262,15 @@ footer p { margin: 0; max-width: 90ch; }
   }
 
   function render() {
-    seg($("seg-state"), STATES.map(s => [s, s]), S.state, v => { S.state = v; exState = null; pickDefaultUnit(); render(); });
+    $("sel-state").value = S.state;
     seg($("seg-subject"), Object.entries(SUBJ), S.subject, v => { S.subject = v; S.concept = null; S.unit = 0; pickDefaultUnit(); render(); });
-    seg($("seg-grade"), DATA.grades.map(g => [g, g]), S.grade, v => { S.grade = +v; S.concept = null; S.unit = 0; pickDefaultUnit(); render(); });
-    [...$("seg-state").children].forEach(b => b.title = DATA.states[b.dataset.v].name);
+    $("sel-grade").value = String(S.grade);
 
     const st = DATA.states[S.state];
-    $("statebar").innerHTML = `<span><b>${esc(st.name)}</b> · ${esc(st.framework)}</span><span>State test: ${esc(st.test)}</span><span class="auth">${esc(st.pacing_authority)}</span>`;
+    $("statebar").innerHTML = `<span><b>${esc(st.name)}</b> · ${esc(st.framework)}</span><span>State test: ${esc(st.test)}</span><span class="auth">${esc(st.pacing_authority)}</span>${st.code_note ? `<span class="auth">${esc(st.code_note)}</span>` : ""}`;
 
     const us = units(); const wr = weekRanges(us); const total = wr.length ? wr[wr.length - 1][1] : 36;
-    $("pacing-title").textContent = `${st.name} · Grade ${S.grade} ${SUBJ[S.subject]} pacing`;
+    $("pacing-title").textContent = `${st.name} · ${S.grade === 0 ? "Kindergarten" : "Grade " + S.grade} ${SUBJ[S.subject]} pacing`;
     $("pacing-sub").textContent = `${us.length} units across ${total} instructional weeks. Units are drawn to scale.`;
     let weeksRow = "";
     for (let w = 1; w <= total; w++) { const q = (w - 1) % 9 === 0; weeksRow += `<span class="${q ? "q" : ""}">${q ? "Q" + (Math.floor((w - 1) / 9) + 1) : (w % 3 === 0 ? w : "")}</span>`; }
@@ -266,7 +282,7 @@ footer p { margin: 0; max-width: 90ch; }
     else {
       $("unitpanel").innerHTML = `<div class="sheet-head"><h3>Unit ${S.unit + 1} of ${us.length}</h3><h2>${esc(u.title)}</h2><div class="unit-meta">Weeks ${wr[S.unit][0]}–${wr[S.unit][1]} · ${u.weeks} weeks</div></div>
         ${u.note ? `<p class="note">${esc(u.note)}</p>` : ""}
-        ${u.concepts.length ? `<ul class="clist">${u.concepts.map(cid => { const c = byId[cid]; const codes = c.codes[S.state]; return `<li><button type="button" data-c="${cid}" aria-current="${cid === S.concept}"><span class="nm">${esc(c.name)}</span><span class="codes">${codes.map(x => `<span class="chip-code">${esc(x)}</span>`).join("")}</span></button></li>`; }).join("")}</ul>` : `<p class="empty">Review and assessment window. Use the scaffolds from earlier units for targeted reteaching.</p>`}`;
+        ${u.concepts.length ? `<ul class="clist">${u.concepts.map(cid => { const c = byId[cid]; const codes = codesFor(c, S.state); return `<li><button type="button" data-c="${cid}" aria-current="${cid === S.concept}"><span class="nm">${esc(c.name)}</span><span class="codes">${codes.map(x => `<span class="chip-code">${esc(x)}</span>`).join("")}</span></button></li>`; }).join("")}</ul>` : `<p class="empty">Review and assessment window. Use the scaffolds from earlier units for targeted reteaching.</p>`}`;
       const cl = $("unitpanel").querySelector(".clist"); if (cl) cl.onclick = e => { const b = e.target.closest("button"); if (b) { S.concept = b.dataset.c; render(); } };
     }
 
@@ -278,17 +294,20 @@ footer p { margin: 0; max-width: 90ch; }
   function renderSheet() {
     const c = byId[S.concept];
     if (!c) { $("sheet").innerHTML = '<p class="empty">Pick a standard from the unit list to see its scaffold.</p>'; return; }
-    const codes = c.codes[S.state];
-    const pre = c.prereqs.map(p => byId[p] ? `<button type="button" class="lchip" data-c="${p}"><span class="g">Gr ${byId[p].grade}</span><span>${esc(byId[p].name)}</span></button>` : `<span class="lchip text"><span class="g">${esc(p.split(":")[0])}</span><span>${esc(p.split(":").slice(1).join(":").trim())}</span></span>`).join("");
-    const nxt = (leadsTo[c.id] || []).map(p => `<button type="button" class="lchip" data-c="${p}"><span class="g">Gr ${byId[p].grade}</span><span>${esc(byId[p].name)}</span></button>`).join("") || `<span class="lchip text"><span class="g">Gr ${c.grade + 1}</span><span>Continues beyond grade 5 in this version</span></span>`;
-    const where = STATES.map(st => {
+    const codes = codesFor(c, S.state);
+    const toVerify = isFull(S.state) && (c.verify || []).includes(S.state);
+    const pre = c.prereqs.map(p => byId[p] ? `<button type="button" class="lchip" data-c="${p}"><span class="g">Gr ${gl(byId[p].grade)}</span><span>${esc(byId[p].name)}</span></button>` : `<span class="lchip text"><span class="g">${esc(p.split(":")[0])}</span><span>${esc(p.split(":").slice(1).join(":").trim())}</span></span>`).join("");
+    const nxt = (leadsTo[c.id] || []).map(p => `<button type="button" class="lchip" data-c="${p}"><span class="g">Gr ${gl(byId[p].grade)}</span><span>${esc(byId[p].name)}</span></button>`).join("") || `<span class="lchip text"><span class="g">Gr ${c.grade + 1}</span><span>Continues beyond grade 6 in this version</span></span>`;
+    const rows = [...new Set([S.state, ...STATES])];
+    const where = rows.map(st => {
       const hits = unitsFor(c.id, st);
-      const cds = c.codes[st];
-      return `<tr class="${st === S.state ? "cur" : ""}${hits.length ? " go" : ""}"${hits.length ? ` data-st="${st}" data-u="${hits[0].i}" title="Open ${st} pacing at this unit"` : ""}><td><b>${st}</b></td><td>${cds.length ? cds.map(x => `<span class="chip-code">${esc(x)}</span>`).join(" ") : '<span class="pill na">Not in standards</span>'}</td><td>${hits.length ? hits.map(h => `<button type="button" class="tbtn" data-st="${st}" data-u="${h.i}">Unit ${h.i + 1}: ${esc(h.u.title)}</button>`).join("<br>") : "—"}</td><td class="wk">${hits.map(h => `Wk ${h.r[0]}–${h.r[1]}`).join("<br>") || "—"}</td></tr>`;
+      const cds = codesFor(c, st);
+      return `<tr class="${st === S.state ? "cur" : ""}${hits.length ? " go" : ""}"${hits.length ? ` data-st="${st}" data-u="${hits[0].i}" title="Open ${st} pacing at this unit"` : ""}><td><b>${st}</b>${isFull(st) ? "" : ` <small>(CCSS)</small>`}</td><td>${cds.length ? cds.map(x => `<span class="chip-code">${esc(x)}</span>`).join(" ") : '<span class="pill na">Not in standards</span>'}</td><td>${hits.length ? hits.map(h => `<button type="button" class="tbtn" data-st="${st}" data-u="${h.i}">Unit ${h.i + 1}: ${esc(h.u.title)}</button>`).join("<br>") : "—"}</td><td class="wk">${hits.map(h => `Wk ${h.r[0]}–${h.r[1]}`).join("<br>") || "—"}</td></tr>`;
     }).join("");
     $("sheet").innerHTML = `
       <div class="sheet-head">
-        <div class="eyebrow"><span class="pill">Grade ${c.grade} ${SUBJ[c.subject]}</span>${codes.length ? `<span class="codes">${codes.map(x => `<span class="chip-code">${esc(x)}</span>`).join("")}</span>` : `<span class="pill na">Not in ${S.state} standards</span>`}</div>
+        <div class="eyebrow"><span class="pill">${c.grade === 0 ? "Kindergarten" : "Grade " + c.grade} ${SUBJ[c.subject]}</span>${codes.length ? `<span class="codes">${codes.map(x => `<span class="chip-code">${esc(x)}</span>`).join("")}</span>` : `<span class="pill na">Not in ${isFull(S.state) ? S.state : "Common Core"} standards</span>`}${toVerify ? `<span class="pill verify" title="These codes follow the state's numbering pattern but have not been checked line by line against the state's documents yet.">Codes not yet verified</span>` : ""}</div>
+        ${!isFull(S.state) && codes.length ? `<p class="codenote">${esc(DATA.states[S.state].code_note)}</p>` : ""}
         <h2>${esc(c.name)}</h2>
         <p class="summary">${esc(c.summary)}</p>
         ${(() => { const pl = DATA.states[S.state].planner; return pl && pl.grades.includes(c.grade) ? `<p class="summary"><a href="${esc(pl.url)}" target="_blank" rel="noopener">Check off and take notes on ${esc(codes.join(", "))} in your ${esc(pl.name)} ↗</a> <span class="muted">(private link: opens only for the owner)</span></p>` : ""; })()}
@@ -322,13 +341,12 @@ footer p { margin: 0; max-width: 90ch; }
 
   let exState = null;
   function exampleBlock(c) {
-    const ex = c.examples || {};
-    const avail = STATES.filter(s => ex[s]);
+    const avail = [...new Set([S.state, ...STATES])].filter(s => exItem(c, s));
     if (!avail.length) return "";
-    let st = exState && ex[exState] ? exState : (ex[S.state] ? S.state : avail[0]);
-    const it = ex[st];
+    let st = exState && avail.includes(exState) ? exState : (avail.includes(S.state) ? S.state : avail[0]);
+    const it = exItem(c, st);
     const tabs = avail.map(s => `<button type="button" data-ex="${s}" aria-pressed="${s === st}">${s}</button>`).join("");
-    const codes = c.codes[st].join(", ");
+    const codes = codesFor(c, st).join(", ");
     return `<div class="example"><div class="ex-head"><h3>Example item</h3><div class="seg small" role="group" aria-label="Example state">${tabs}</div></div>
       <div class="ex-card">
         <div class="eyebrow"><span class="pill">${esc(it.style)}</span><span>${esc(it.format)}</span>${codes ? `<span class="chip-code">${esc(codes)}</span>` : ""}</div>
@@ -338,9 +356,14 @@ footer p { margin: 0; max-width: 90ch; }
         <details><summary>Show answer</summary><p>${esc(it.answer)}</p></details>
         ${it.text ? `<div><button type="button" class="copybtn" data-copy="${st}">Copy passage and question for students</button> <span class="copymsg" aria-live="polite"></span></div>` : ""}
       </div>
-      <p class="note">Original practice item written in the style of ${esc(DATA.states[st].name)}'s guidance and tests. It is not a released test item.</p></div>`;
+      <p class="note">${it.shared ? "Original classroom check, shared across states, since state tests begin in grade 3." : isFull(st) ? `Original practice item written in the style of ${esc(DATA.states[st].name)}'s guidance and tests. It is not a released test item.` : `Original practice item for the matching Common Core skill, in Smarter Balanced-style formats. It is not a ${esc(DATA.states[st].name)} test item.`}</p></div>`;
   }
 
+  function exItem(c, st) {
+    const it = (c.examples || {})[base(st)]; if (!it) return null;
+    if (isFull(st) || it.shared) return it;
+    return Object.assign({}, it, { style: "Common Core-style item" });
+  }
   function textsFor(g, ref) {
     const P = DATA.passages && DATA.passages[g]; if (!P || !ref) return [];
     return ref === "pair" ? [P.story, P.article] : [P[ref]];
@@ -350,7 +373,7 @@ footer p { margin: 0; max-width: 90ch; }
     return ts.map(t => `<details class="passage"><summary>Read: ${esc(t.title)}</summary><div class="ptext">${t.text.split(/\n\n+/).map(par => `<p>${esc(par).replace(/\n/g, "<br>")}</p>`).join("")}</div></details>`).join("");
   }
   function studentCopy(c, st) {
-    const it = c.examples[st]; const ts = textsFor(c.grade, it.text);
+    const it = exItem(c, st); const ts = textsFor(c.grade, it.text);
     let out = ts.map(t => `${t.title}\n\n${t.text}`).join("\n\n\n");
     out += `\n\n\n${it.prompt}`;
     if (it.choices) out += "\n" + it.choices.map((x, i) => `${"ABCDE"[i]}. ${x}`).join("\n");
@@ -381,7 +404,7 @@ footer p { margin: 0; max-width: 90ch; }
   }
 
   function renderSources() {
-    $("sources").innerHTML = STATES.map(s => { const st = DATA.states[s]; return `<div><b>${esc(st.name)}</b><ul>${st.sources.map(([t, u]) => `<li><a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a></li>`).join("")}</ul></div>`; }).join("");
+    $("sources").innerHTML = [...new Set([...STATES, S.state])].map(s => { const st = DATA.states[s]; return `<div><b>${esc(st.name)}</b><ul>${st.sources.map(([t, u]) => `<li><a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a></li>`).join("")}</ul></div>`; }).join("");
   }
 
   // search
@@ -390,7 +413,7 @@ footer p { margin: 0; max-width: 90ch; }
     const term = q.value.trim().toLowerCase();
     if (term.length < 2) { res.hidden = true; return; }
     const hits = DATA.concepts.filter(c => c.name.toLowerCase().includes(term) || c.summary.toLowerCase().includes(term) || STATES.some(s => c.codes[s].some(x => x.toLowerCase().includes(term)))).slice(0, 12);
-    res.innerHTML = hits.length ? hits.map(c => { const cds = STATES.flatMap(s => c.codes[s].filter(x => x.toLowerCase().includes(term)).map(x => `${s} ${x}`)); return `<button type="button" data-c="${c.id}"><span><b>${esc(c.name)}</b></span><small>Grade ${c.grade} ${SUBJ[c.subject]}${cds.length ? " · " + esc(cds.slice(0, 3).join(", ")) : ""}</small></button>`; }).join("") : '<button type="button" disabled><small>No matching standards in grades 3–5.</small></button>';
+    res.innerHTML = hits.length ? hits.map(c => { const cds = STATES.flatMap(s => c.codes[s].filter(x => x.toLowerCase().includes(term)).map(x => `${s} ${x}`)); return `<button type="button" data-c="${c.id}"><span><b>${esc(c.name)}</b></span><small>${c.grade === 0 ? "Kindergarten" : "Grade " + c.grade} ${SUBJ[c.subject]}${cds.length ? " · " + esc(cds.slice(0, 3).join(", ")) : ""}</small></button>`; }).join("") : '<button type="button" disabled><small>No matching standards in grades K–6.</small></button>';
     res.hidden = false;
   });
   res.addEventListener("click", e => { const b = e.target.closest("[data-c]"); if (b) { res.hidden = true; q.value = ""; goConcept(b.dataset.c); } });
@@ -399,19 +422,23 @@ footer p { margin: 0; max-width: 90ch; }
 
   function save() {
     try { localStorage.setItem("ss-state", JSON.stringify(S)); } catch (e) {}
-    const h = `${S.state}-${S.subject}-${S.grade}${S.concept ? "-" + S.concept : ""}`.toLowerCase();
+    const h = `${S.state}-${S.subject}-${gl(S.grade)}${S.concept ? "-" + S.concept : ""}`.toLowerCase();
     if (location.hash.slice(1) !== h) history.replaceState(null, "", "#" + h);
   }
   function readHash() {
     const h = location.hash.slice(1); if (!h) return;
     const p = h.split("-"); const st = (p[0] || "").toUpperCase();
-    if (!["NC", "MI", "TX"].includes(st) || !["math", "ela"].includes(p[1]) || ![3, 4, 5].includes(+p[2])) return;
-    S.state = st; S.subject = p[1]; S.grade = +p[2];
+    const g = p[2] === "k" ? 0 : +p[2];
+    if (!DATA.states[st] || !["math", "ela"].includes(p[1]) || !DATA.grades.includes(g)) return;
+    S.state = st; S.subject = p[1]; S.grade = g;
     const cid = p.slice(3).join("-"); S.concept = cid || null;
   }
   window.addEventListener("hashchange", () => { readHash(); pickDefaultUnit(); render(); });
 
+  if (!DATA.states[S.state]) S.state = "NC";
+  if (!DATA.grades.includes(S.grade)) S.grade = 4;
   if (S.concept && !byId[S.concept]) S.concept = null;
+  fillSelects();
   pickDefaultUnit();
   render();
 })();
